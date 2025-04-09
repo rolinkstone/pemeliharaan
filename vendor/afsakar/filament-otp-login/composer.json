@@ -1,0 +1,82 @@
+{
+    "name": "afsakar/filament-otp-login",
+    "description": "OTP Login for FilamentPHP",
+    "keywords": [
+        "afsakar",
+        "laravel",
+        "filament-otp-login"
+    ],
+    "homepage": "https://github.com/afsakar/filament-otp-login",
+    "support": {
+        "issues": "https://github.com/afsakar/filament-otp-login/issues",
+        "source": "https://github.com/afsakar/filament-otp-login"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Azad Furkan ŞAKAR",
+            "email": "afsakarr@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.1",
+        "filament/filament": "^3.0",
+        "spatie/laravel-package-tools": "^1.15.0"
+    },
+    "require-dev": {
+        "larastan/larastan": "^2.9",
+        "laravel/pint": "^1.0",
+        "nunomaduro/collision": "^7.9",
+        "orchestra/testbench": "^8.0",
+        "pestphp/pest": "^2.1",
+        "pestphp/pest-plugin-arch": "^2.0",
+        "pestphp/pest-plugin-laravel": "^2.0",
+        "phpstan/extension-installer": "^1.1",
+        "phpstan/phpstan-deprecation-rules": "^1.0",
+        "phpstan/phpstan-phpunit": "^1.0",
+        "spatie/laravel-ray": "^1.26"
+    },
+    "autoload": {
+        "psr-4": {
+            "Afsakar\\FilamentOtpLogin\\": "src/",
+            "Afsakar\\FilamentOtpLogin\\Database\\Factories\\": "database/factories/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Afsakar\\FilamentOtpLogin\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": "@php ./vendor/bin/testbench package:discover --ansi",
+        "phpstan": "vendor/bin/phpstan analyse --error-format=github --memory-limit=1G",
+        "test": "vendor/bin/pest",
+        "test-coverage": "vendor/bin/pest --coverage",
+        "lint": "vendor/bin/pint -v",
+        "checks": [
+            "@lint",
+            "@phpstan",
+            "@test"
+        ]
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "phpstan/extension-installer": true
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Afsakar\\FilamentOtpLogin\\FilamentOtpLoginServiceProvider"
+            ],
+            "aliases": {
+                "FilamentOtpLogin": "Afsakar\\FilamentOtpLogin\\Facades\\FilamentOtpLogin"
+            }
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

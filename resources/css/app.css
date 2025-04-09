@@ -1,0 +1,9 @@
+@media (min-width: 1024px) {
+    .fi-sidebar {
+        width: 600px !important; /* Ubah sesuai kebutuhan */
+    }
+
+    .fi-main {
+        margin-left: 300px !important;
+    }
+}
