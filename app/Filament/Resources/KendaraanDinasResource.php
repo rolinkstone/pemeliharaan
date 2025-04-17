@@ -86,19 +86,19 @@ class KendaraanDinasResource extends Resource
                 ->searchable(),
 
 
-                Forms\Components\hidden::make('user_id')
+                Forms\Components\Hidden::make('user_id')
                 ->default(auth()->id())
                 ->disabled()
                 ->dehydrated(),
 
-                Forms\Components\hidden::make('nama')
+                Forms\Components\Hidden::make('nama')
                 ->label('Nama PIC')
                 ->required()
                 ->default(auth()->user()->name) // Mengambil nama pengguna yang sedang login
                 ->disabled()
                 ->dehydrated(), // Memast
 
-                Forms\Components\hidden::make('fungsi')
+                Forms\Components\Hidden::make('fungsi')
                 ->label('Nama PIC')
                 ->required()
                 ->default(auth()->user()->fungsi) // Mengambil nama pengguna yang sedang login
