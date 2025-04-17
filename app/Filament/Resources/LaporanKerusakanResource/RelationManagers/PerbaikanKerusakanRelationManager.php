@@ -43,12 +43,12 @@ class PerbaikanKerusakanRelationManager extends RelationManager
                     ->disabled()
                     ->dehydrated(),
 
-                Forms\Components\TextArea::make('kerusakan')
+                Forms\Components\Textarea::make('kerusakan')
                     ->label('Kerusakan')
                     ->required()
                     ->maxLength(255),
 
-                Forms\Components\TextArea::make('hasil')
+                Forms\Components\Textarea::make('hasil')
                     ->label('Hasil Perbaikan')
                     ->required()
                     ->maxLength(255),
@@ -64,12 +64,12 @@ class PerbaikanKerusakanRelationManager extends RelationManager
                     ])
                     ->searchable(),
 
-                Forms\Components\TextArea::make('catatan')
+                Forms\Components\Textarea::make('catatan')
                     ->label('Catatan')
                     ->required()
                     ->maxLength(255),
 
-                Forms\Components\hidden::make('validasi')
+                Forms\Components\Hidden::make('validasi')
                     ->label('Ditujukan Ke')
                     ->default(function ($get, $set) {
                         $disposisi = $this->getOwnerRecord()->disposisikerusakanone;

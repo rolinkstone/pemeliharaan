@@ -25,12 +25,12 @@ class DisposisiPermintaanRelationManager extends RelationManager
                 ->required()
                 ->maxLength(255),
 
-                Forms\Components\TextArea::make('isi')
+                Forms\Components\Textarea::make('isi')
                 ->label('isi')
                 ->required()
                 ->maxLength(255),
 
-                Forms\Components\hidden::make('tanggal')
+                Forms\Components\Hidden::make('tanggal')
                 ->label('Tanggal')
                 ->required()
                 ->default(Carbon::now()->format('Y-m-d'))
