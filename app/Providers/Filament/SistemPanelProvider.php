@@ -18,12 +18,15 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Filament\Facades\Filament;
+use Filament\Navigation\UserMenuItem;
 
 class SistemPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
 {
     return $panel
+    
         ->default()
         ->id('sistem')
         ->path('sistem')
@@ -58,6 +61,7 @@ class SistemPanelProvider extends PanelProvider
         ->authMiddleware([
             Authenticate::class,
         ])
+      
         ->plugins([
             \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make()
         ]);

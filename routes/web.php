@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PdfController;
 use App\Http\Controllers\TicketController;
+use App\Http\Controllers\SpbController;
 use App\Http\Controllers\Auth\Login;
 
 /*
@@ -25,6 +26,7 @@ Route::get('/generate-pdf/{id}', [PdfController::class, 'generatePdf'])->name('g
 
 
 Route::get('/cetak-pdf/{id}', [TicketController::class, 'cetakPdf'])->name('cetak-pdf');
+Route::get('/spb-pdf/{id}', [SpbController::class, 'spbPdf'])->name('spb-pdf');
 
 Route::get('/storage/bukti_bayar/{filename}', function ($filename) {
     $path = storage_path('app/public/bukti_bayar/' . $filename);

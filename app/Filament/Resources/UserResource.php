@@ -42,14 +42,14 @@ class UserResource extends Resource
                 Forms\Components\TextInput::make('email')
                     ->email()
                     ->required(),
-                Forms\Components\TextInput::make('password')
+                    Forms\Components\TextInput::make('password')
+                    ->label('Password')
                     ->password()
-                    ->dehydrateStateUsing(fn ($state) => $state ? bcrypt($state) : null)
+                    ->dehydrateStateUsing(fn ($state) => filled($state) ? bcrypt($state) : null)
+                    ->dehydrated(fn ($state) => filled($state))
                     ->required(fn ($record) => $record === null)
-                    ->afterStateHydrated(function ($component, $state) {
-                        $component->state(null); // Kosongkan input saat form di-load
-                    })
-                    ->dehydrated(fn ($state) => !is_null($state)),
+                    ->afterStateHydrated(fn ($component) => $component->state('')) // kosongkan saat edit
+                    ->minLength(8),
                 // Dropdown untuk memilih Role
                 Forms\Components\Select::make('roles')
                     ->label('Role')

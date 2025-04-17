@@ -1,23 +1,24 @@
 <?php
 
 return [
+'title' => 'Login',
 
-    'title' => 'Login',
 
-    'heading' => 'Sign in',
+'heading' => 'Login',
 
-    'actions' => [
+'actions' => [
 
-        'register' => [
-            'before' => 'or',
-            'label' => 'sign up for an account',
-        ],
-
-        'request_password_reset' => [
-            'label' => 'Forgot password?',
-        ],
-
+    'register' => [
+        'before' => 'or',
+        'label' => 'sign up for an account',
     ],
+
+    'request_password_reset' => [
+        'label' => 'Forgot password?',
+    ],
+
+],
+
 
     'form' => [
 

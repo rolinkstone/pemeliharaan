@@ -402,6 +402,14 @@ class PermintaanBarangPersediaanResource extends Resource
                     // Sembunyikan tombol delete jika kabag_tu_id sudah diisi
                     return !is_null($record->kabag_tu_id);
                 }),
+
+                Tables\Actions\Action::make('spb')
+                ->label('SPB & SBBK')
+                ->icon('heroicon-o-printer') // Hanya menampilkan ikon printer
+                ->url(fn ($record) => route('spb-pdf', ['id' => $record->id]))
+                ->openUrlInNewTab()
+                ->color('success') // Tombol berwarna hijau
+                ->visible(fn ($record) => $record->diserahkan_id == 1),
                 
             ])
             ->bulkActions([

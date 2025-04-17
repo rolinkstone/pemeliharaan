@@ -243,6 +243,7 @@ class ComposerStaticInit0e2d180f99e61e2079796831a6c5b827
             'BladeUI\\Heroicons\\' => 18,
             'BezhanSalleh\\FilamentShield\\Database\\Factories\\' => 47,
             'BezhanSalleh\\FilamentShield\\' => 28,
+            'Barryvdh\\DomPDF\\' => 16,
             'BaconQrCode\\' => 12,
         ),
         'A' => 
@@ -779,6 +780,10 @@ class ComposerStaticInit0e2d180f99e61e2079796831a6c5b827
         array (
             0 => __DIR__ . '/..' . '/bezhansalleh/filament-shield/src',
         ),
+        'Barryvdh\\DomPDF\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/barryvdh/laravel-dompdf/src',
+        ),
         'BaconQrCode\\' => 
         array (
             0 => __DIR__ . '/..' . '/bacon/bacon-qr-code/src',
@@ -849,6 +854,10 @@ class ComposerStaticInit0e2d180f99e61e2079796831a6c5b827
         'App\\Filament\\Resources\\LaporanKerusakanResource\\Pages\\ListLaporanKerusakans' => __DIR__ . '/../..' . '/app/Filament/Resources/LaporanKerusakanResource/Pages/ListLaporanKerusakans.php',
         'App\\Filament\\Resources\\LaporanKerusakanResource\\RelationManagers\\DisposisiKerusakanRelationManager' => __DIR__ . '/../..' . '/app/Filament/Resources/LaporanKerusakanResource/RelationManagers/DisposisiKerusakanRelationManager.php',
         'App\\Filament\\Resources\\LaporanKerusakanResource\\RelationManagers\\PerbaikanKerusakanRelationManager' => __DIR__ . '/../..' . '/app/Filament/Resources/LaporanKerusakanResource/RelationManagers/PerbaikanKerusakanRelationManager.php',
+        'App\\Filament\\Resources\\PembelianBarangPersediaanResource' => __DIR__ . '/../..' . '/app/Filament/Resources/PembelianBarangPersediaanResource.php',
+        'App\\Filament\\Resources\\PembelianBarangPersediaanResource\\Pages\\CreatePembelianBarangPersediaan' => __DIR__ . '/../..' . '/app/Filament/Resources/PembelianBarangPersediaanResource/Pages/CreatePembelianBarangPersediaan.php',
+        'App\\Filament\\Resources\\PembelianBarangPersediaanResource\\Pages\\EditPembelianBarangPersediaan' => __DIR__ . '/../..' . '/app/Filament/Resources/PembelianBarangPersediaanResource/Pages/EditPembelianBarangPersediaan.php',
+        'App\\Filament\\Resources\\PembelianBarangPersediaanResource\\Pages\\ListPembelianBarangPersediaans' => __DIR__ . '/../..' . '/app/Filament/Resources/PembelianBarangPersediaanResource/Pages/ListPembelianBarangPersediaans.php',
         'App\\Filament\\Resources\\PermintaanBarangPersediaanResource' => __DIR__ . '/../..' . '/app/Filament/Resources/PermintaanBarangPersediaanResource.php',
         'App\\Filament\\Resources\\PermintaanBarangPersediaanResource\\Pages\\CreatePermintaanBarangPersediaan' => __DIR__ . '/../..' . '/app/Filament/Resources/PermintaanBarangPersediaanResource/Pages/CreatePermintaanBarangPersediaan.php',
         'App\\Filament\\Resources\\PermintaanBarangPersediaanResource\\Pages\\EditPermintaanBarangPersediaan' => __DIR__ . '/../..' . '/app/Filament/Resources/PermintaanBarangPersediaanResource/Pages/EditPermintaanBarangPersediaan.php',
@@ -984,6 +993,9 @@ class ComposerStaticInit0e2d180f99e61e2079796831a6c5b827
         'BaconQrCode\\Renderer\\RendererStyle\\GradientType' => __DIR__ . '/..' . '/bacon/bacon-qr-code/src/Renderer/RendererStyle/GradientType.php',
         'BaconQrCode\\Renderer\\RendererStyle\\RendererStyle' => __DIR__ . '/..' . '/bacon/bacon-qr-code/src/Renderer/RendererStyle/RendererStyle.php',
         'BaconQrCode\\Writer' => __DIR__ . '/..' . '/bacon/bacon-qr-code/src/Writer.php',
+        'Barryvdh\\DomPDF\\Facade\\Pdf' => __DIR__ . '/..' . '/barryvdh/laravel-dompdf/src/Facade/Pdf.php',
+        'Barryvdh\\DomPDF\\PDF' => __DIR__ . '/..' . '/barryvdh/laravel-dompdf/src/PDF.php',
+        'Barryvdh\\DomPDF\\ServiceProvider' => __DIR__ . '/..' . '/barryvdh/laravel-dompdf/src/ServiceProvider.php',
         'BezhanSalleh\\FilamentShield\\Commands\\Concerns\\CanGeneratePolicy' => __DIR__ . '/..' . '/bezhansalleh/filament-shield/src/Commands/Concerns/CanGeneratePolicy.php',
         'BezhanSalleh\\FilamentShield\\Commands\\Concerns\\CanManipulateFiles' => __DIR__ . '/..' . '/bezhansalleh/filament-shield/src/Commands/Concerns/CanManipulateFiles.php',
         'BezhanSalleh\\FilamentShield\\Commands\\MakeShieldDoctorCommand' => __DIR__ . '/..' . '/bezhansalleh/filament-shield/src/Commands/MakeShieldDoctorCommand.php',

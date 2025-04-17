@@ -21,6 +21,7 @@ use Filament\Forms\Components\Grid;
 use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\Select;
 use Carbon\Carbon;
+use App\Models\Kategori;
 
 use Filament\Tables\Actions\Action;
 
@@ -37,7 +38,25 @@ class BarangPersediaanResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Forms\Components\TextInput::make('jenis_barang')
+                    ->label('Jenis Barang')
+                    ->required()
+                    ->maxLength(255),
+    
+                Forms\Components\Select::make('kategori')
+                    ->label('Kategori')
+                    ->options(Kategori::pluck('kategori', 'kategori'))
+                    ->required(),
+    
+                Forms\Components\TextInput::make('satuan')
+                    ->label('Satuan')
+                    ->required()
+                    ->maxLength(255),
+    
+                Forms\Components\TextInput::make('saldo_awal')
+                    ->label('Saldo Awal')
+                    ->required()
+                    ->maxLength(255),
             ]);
     }
 

@@ -295,7 +295,10 @@ class PembelianBarangPersediaanResource extends Resource
                     ->url(fn ($record) => asset('storage/' . $record->bukti_bayar), true) // URL ke file
                     ->openUrlInNewTab(), // Buka di tab baru
                     Tables\Actions\EditAction::make(),
+
+                  
             ])
+
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),

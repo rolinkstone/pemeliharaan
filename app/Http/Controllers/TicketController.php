@@ -22,4 +22,5 @@ class TicketController extends Controller
         // Download PDF
         return $pdf->download('ticket.pdf');
     }
+   
 }
