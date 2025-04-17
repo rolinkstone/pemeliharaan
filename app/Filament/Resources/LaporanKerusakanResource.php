@@ -148,26 +148,26 @@ class LaporanKerusakanResource extends Resource
                          ])
                 ->searchable(), // Jika ingin bisa dicari
 
-                Forms\Components\hidden::make('tanggal')
+                Forms\Components\Hidden::make('tanggal')
                 ->label('Tanggal')
                 ->required()
                 ->default(Carbon::now()->format('Y-m-d'))
                 ->disabled()
                 ->dehydrated(),
 
-                Forms\Components\hidden::make('user_id')
+                Forms\Components\Hidden::make('user_id')
                 ->default(auth()->id())
                 ->disabled()
                 ->dehydrated(),
 
-                Forms\Components\hidden::make('nama_pelapor')
+                Forms\Components\Hidden::make('nama_pelapor')
                 ->label('Nama Pelapor')
                 ->required()
                 ->default(auth()->user()->name) // Mengambil nama pengguna yang sedang login
                 ->disabled()
                 ->dehydrated(), // Memastikan nilai tetap tersimpan ke database, // Menonaktifkan input agar tidak bisa diubah
 
-                Forms\Components\hidden::make('no_ticket')
+                Forms\Components\Hidden::make('no_ticket')
                 ->default(function () {
                     return LaporanKerusakan::generateNoTiket();
                 })

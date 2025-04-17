@@ -53,7 +53,7 @@ class PermintaanDriverResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\hidden::make('tanggal')
+                Forms\Components\Hidden::make('tanggal')
                 ->label('Tanggal')
                 ->required()
                 ->default(Carbon::now()->format('Y-m-d'))
@@ -100,7 +100,7 @@ class PermintaanDriverResource extends Resource
                 ->required()
                 ->maxLength(255),
 
-                Forms\Components\hidden::make('user_id')
+                Forms\Components\Hidden::make('user_id')
                 ->default(auth()->id())
                 ->disabled()
                 ->dehydrated(),
