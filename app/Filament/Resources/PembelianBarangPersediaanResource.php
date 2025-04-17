@@ -48,7 +48,7 @@ class PembelianBarangPersediaanResource extends Resource
         {
             return $form
                 ->schema([
-                    Forms\Components\hidden::make('fungsi')
+                    Forms\Components\Hidden::make('fungsi')
                     ->label('Nama PIC')
                     ->required()
                     ->default(auth()->user()->fungsi) // Mengambil nama pengguna yang sedang login
@@ -77,20 +77,20 @@ class PembelianBarangPersediaanResource extends Resource
                 ]),
                     
 
-                    Forms\Components\hidden::make('user_id')
+                    Forms\Components\Hidden::make('user_id')
                         ->default(auth()->id())
                         ->disabled()
                         ->disabled(fn (string $operation): bool => $operation === 'edit')
                         ->dehydrated(),
 
-                    Forms\Components\hidden::make('nama_pelapor')
+                    Forms\Components\Hidden::make('nama_pelapor')
                         ->label('Nama Pelapor')
                         ->required()
                         ->default(auth()->user()->name) // Mengambil nama pengguna yang sedang login
                         ->disabled()
                         ->dehydrated(),
 
-                    Forms\Components\hidden::make('no_ticket')
+                    Forms\Components\Hidden::make('no_ticket')
                         ->default(function () {
                             return PermintaanBarangPersediaan::generateNoTiket();
                         })
@@ -140,7 +140,7 @@ class PembelianBarangPersediaanResource extends Resource
                                 ->required()
                                 ->label('Jumlah'),
 
-                            Forms\Components\hidden::make('status')
+                            Forms\Components\Hidden::make('status')
                                 ->required()
                                 ->label('Status')
                                 ->default('In') // Menambahkan nilai default "Out"
@@ -149,7 +149,7 @@ class PembelianBarangPersediaanResource extends Resource
 
                            
 
-                            Forms\Components\hidden::make('barang_persediaan_id')
+                            Forms\Components\Hidden::make('barang_persediaan_id')
                             ->required()
                             ->label('ID Barang')
                             ->disabled()

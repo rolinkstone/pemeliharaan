@@ -103,20 +103,20 @@ class PermintaanBarangPersediaanResource extends Resource
                         ->disabled(fn (string $operation): bool => $operation === 'edit')
                         ->searchable(),
 
-                    Forms\Components\hidden::make('user_id')
+                    Forms\Components\Hidden::make('user_id')
                         ->default(auth()->id())
                         ->disabled()
                         ->disabled(fn (string $operation): bool => $operation === 'edit')
                         ->dehydrated(),
 
-                    Forms\Components\hidden::make('nama_pelapor')
+                    Forms\Components\Hidden::make('nama_pelapor')
                         ->label('Nama Pelapor')
                         ->required()
                         ->default(auth()->user()->name) // Mengambil nama pengguna yang sedang login
                         ->disabled()
                         ->dehydrated(),
 
-                    Forms\Components\hidden::make('no_ticket')
+                    Forms\Components\Hidden::make('no_ticket')
                         ->default(function () {
                             return PermintaanBarangPersediaan::generateNoTiket();
                         })
@@ -166,7 +166,7 @@ class PermintaanBarangPersediaanResource extends Resource
                                 ->required()
                                 ->label('Jumlah'),
 
-                            Forms\Components\hidden::make('status')
+                            Forms\Components\Hidden::make('status')
                                 ->required()
                                 ->label('Status')
                                 ->default('Out') // Menambahkan nilai default "Out"
@@ -175,7 +175,7 @@ class PermintaanBarangPersediaanResource extends Resource
 
                            
 
-                            Forms\Components\hidden::make('barang_persediaan_id')
+                            Forms\Components\Hidden::make('barang_persediaan_id')
                             ->required()
                             ->label('ID Barang')
                             ->disabled()
@@ -398,7 +398,7 @@ class PermintaanBarangPersediaanResource extends Resource
                 }),
 
                 Tables\Actions\DeleteAction::make()
-                ->hidden(function ($record) {
+                ->Hidden(function ($record) {
                     // Sembunyikan tombol delete jika kabag_tu_id sudah diisi
                     return !is_null($record->kabag_tu_id);
                 }),
