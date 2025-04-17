@@ -105,7 +105,7 @@ class PermintaanDriverResource extends Resource
                 ->disabled()
                 ->dehydrated(),
 
-                Forms\Components\Textinput::make('nama')
+                Forms\Components\TextInput::make('nama')
                 ->label('Nama PIC')
                 ->required()
                 ->default(auth()->user()->name) // Mengambil nama pengguna yang sedang login

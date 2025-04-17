@@ -75,7 +75,7 @@ class PermintaanPrasaranaResource extends Resource
                 ->required()
                 ->maxLength(255),
 
-                Forms\Components\Textinput::make('nama')
+                Forms\Components\TextInput::make('nama')
                 ->label('Nama Alat')
                 ->required()
                 ->maxLength(255),
