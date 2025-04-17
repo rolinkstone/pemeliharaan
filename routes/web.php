@@ -20,7 +20,9 @@ use App\Http\Controllers\Auth\Login;
 Route::get('/', function () {
     return view('welcome');
 });
-
+Route::get('/', function () {
+    return redirect('/sistem');
+});
 Route::get('/generate-pdf/{id}', [PdfController::class, 'generatePdf'])->name('generate-pdf');
 // Ensure this route is correctly defined
 
