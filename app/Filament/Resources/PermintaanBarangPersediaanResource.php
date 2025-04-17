@@ -76,7 +76,7 @@ class PermintaanBarangPersediaanResource extends Resource
         {
             return $form
                 ->schema([
-                    Forms\Components\hidden::make('fungsi')
+                    Forms\Components\Hidden::make('fungsi')
                     ->label('Nama PIC')
                     ->required()
                     ->default(auth()->user()->fungsi) // Mengambil nama pengguna yang sedang login
