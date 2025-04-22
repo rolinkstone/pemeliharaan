@@ -22,9 +22,9 @@ use Illuminate\Support\Facades\Auth;
 class PermintaanDriverResource extends Resource
 {
     protected static ?string $model = PermintaanDriver::class;
-
+    protected static ?string $pluralLabel = 'Permintaan Driver';
     protected static ?string $navigationGroup = 'ASET';
-    protected static ?string $navigationLabel = 'Permintaan Driver';
+    protected static ?string $navigationLabel = 'Driver';
     protected static ?string $navigationIcon = 'heroicon-s-user';
 
 

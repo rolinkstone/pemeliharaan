@@ -1,0 +1,72 @@
+[1mdiff --git a/app/Filament/Resources/KategoriResource.php b/app/Filament/Resources/KategoriResource.php[m
+[1mindex 972f452d..144a2742 100644[m
+[1m--- a/app/Filament/Resources/KategoriResource.php[m
+[1m+++ b/app/Filament/Resources/KategoriResource.php[m
+[36m@@ -18,7 +18,7 @@[m [mclass KategoriResource extends Resource[m
+     protected static ?string $model = Kategori::class;[m
+ [m
+     protected static ?string $navigationGroup = 'MASTER';[m
+[31m-    protected static ?string $navigationLabel = 'Kategori Barang';[m
+[32m+[m[32m    protected static ?string $navigationLabel = 'Kategori Aset';[m
+     protected static ?string $navigationIcon = 'heroicon-s-view-columns';[m
+ [m
+     public static function form(Form $form): Form[m
+[1mdiff --git a/app/Filament/Resources/KendaraanDinasResource.php b/app/Filament/Resources/KendaraanDinasResource.php[m
+[1mindex 1f6164a9..2980178d 100644[m
+[1m--- a/app/Filament/Resources/KendaraanDinasResource.php[m
+[1m+++ b/app/Filament/Resources/KendaraanDinasResource.php[m
+[36m@@ -17,8 +17,8 @@[m [muse Filament\Forms\Components\DateTimePicker;[m
+ class KendaraanDinasResource extends Resource[m
+ {[m
+     protected static ?string $model = KendaraanDinas::class;[m
+[31m-[m
+[31m-    protected static ?string $navigationGroup = 'PEMINJAMAN';[m
+[32m+[m[32m    protected static ?string $pluralLabel = 'Peminjaman Kendaraan Dinas';[m
+[32m+[m[32m    protected static ?string $navigationGroup = 'ASET';[m
+     protected static ?string $navigationLabel = 'Kendaraan Dinas';[m
+     protected static ?string $navigationIcon = 'heroicon-s-truck';[m
+ [m
+[1mdiff --git a/app/Filament/Resources/LaporanKerusakanResource.php b/app/Filament/Resources/LaporanKerusakanResource.php[m
+[1mindex 9e3f959e..ee915bdf 100644[m
+[1m--- a/app/Filament/Resources/LaporanKerusakanResource.php[m
+[1m+++ b/app/Filament/Resources/LaporanKerusakanResource.php[m
+[36m@@ -35,7 +35,8 @@[m [muse Filament\Tables\Actions\Action;[m
+ class LaporanKerusakanResource extends Resource[m
+ {[m
+     protected static ?string $model = LaporanKerusakan::class;[m
+[31m-    protected static ?string $navigationGroup = 'PENGADUAN';[m
+[32m+[m[32m    protected static ?string $pluralLabel = 'Pengaduan Kerusakan';[m
+[32m+[m[32m    protected static ?string $navigationGroup = 'ASET';[m
+     protected static ?string $navigationLabel = 'Kerusakan';[m
+     protected static ?string $navigationIcon = 'heroicon-s-wrench-screwdriver';[m
+ [m
+[1mdiff --git a/app/Filament/Resources/PermintaanDriverResource.php b/app/Filament/Resources/PermintaanDriverResource.php[m
+[1mindex d8b08c84..b64367ba 100644[m
+[1m--- a/app/Filament/Resources/PermintaanDriverResource.php[m
+[1m+++ b/app/Filament/Resources/PermintaanDriverResource.php[m
+[36m@@ -23,7 +23,7 @@[m [mclass PermintaanDriverResource extends Resource[m
+ {[m
+     protected static ?string $model = PermintaanDriver::class;[m
+ [m
+[31m-    protected static ?string $navigationGroup = 'PERMINTAAN';[m
+[32m+[m[32m    protected static ?string $navigationGroup = 'ASET';[m
+     protected static ?string $navigationLabel = 'Permintaan Driver';[m
+     protected static ?string $navigationIcon = 'heroicon-s-user';[m
+ [m
+[1mdiff --git a/app/Filament/Resources/PermintaanPrasaranaResource.php b/app/Filament/Resources/PermintaanPrasaranaResource.php[m
+[1mindex 2be16888..3712fd09 100644[m
+[1m--- a/app/Filament/Resources/PermintaanPrasaranaResource.php[m
+[1m+++ b/app/Filament/Resources/PermintaanPrasaranaResource.php[m
+[36m@@ -30,9 +30,9 @@[m [muse Illuminate\Support\Facades\DB;[m
+ class PermintaanPrasaranaResource extends Resource[m
+ {[m
+     protected static ?string $model = PermintaanPrasarana::class;[m
+[31m-[m
+[31m-    protected static ?string $navigationGroup = 'PERMINTAAN';[m
+[31m-    protected static ?string $navigationLabel = 'Permintaan Prasarana';[m
+[32m+[m[32m    protected static ?string $pluralLabel = 'Permintaan Prasarana';[m
+[32m+[m[32m    protected static ?string $navigationGroup = 'ASET';[m
+[32m+[m[32m    protected static ?string $navigationLabel = 'Prasarana';[m
+     protected static ?string $navigationIcon = 'heroicon-s-building-office';[m
+ [m
+       // Menambahkan badge dengan jumlah laporan yang belum diproses[m
