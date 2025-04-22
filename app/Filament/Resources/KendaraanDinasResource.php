@@ -17,8 +17,8 @@ use Filament\Forms\Components\DateTimePicker;
 class KendaraanDinasResource extends Resource
 {
     protected static ?string $model = KendaraanDinas::class;
-
-    protected static ?string $navigationGroup = 'PEMINJAMAN';
+    protected static ?string $pluralLabel = 'Peminjaman Kendaraan Dinas';
+    protected static ?string $navigationGroup = 'ASET';
     protected static ?string $navigationLabel = 'Kendaraan Dinas';
     protected static ?string $navigationIcon = 'heroicon-s-truck';
 

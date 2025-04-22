@@ -30,9 +30,9 @@ use Illuminate\Support\Facades\DB;
 class PermintaanPrasaranaResource extends Resource
 {
     protected static ?string $model = PermintaanPrasarana::class;
-
-    protected static ?string $navigationGroup = 'PERMINTAAN';
-    protected static ?string $navigationLabel = 'Permintaan Prasarana';
+    protected static ?string $pluralLabel = 'Permintaan Prasarana';
+    protected static ?string $navigationGroup = 'ASET';
+    protected static ?string $navigationLabel = 'Prasarana';
     protected static ?string $navigationIcon = 'heroicon-s-building-office';
 
       // Menambahkan badge dengan jumlah laporan yang belum diproses

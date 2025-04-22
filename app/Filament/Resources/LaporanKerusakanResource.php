@@ -35,7 +35,8 @@ use Filament\Tables\Actions\Action;
 class LaporanKerusakanResource extends Resource
 {
     protected static ?string $model = LaporanKerusakan::class;
-    protected static ?string $navigationGroup = 'PENGADUAN';
+    protected static ?string $pluralLabel = 'Pengaduan Kerusakan';
+    protected static ?string $navigationGroup = 'ASET';
     protected static ?string $navigationLabel = 'Kerusakan';
     protected static ?string $navigationIcon = 'heroicon-s-wrench-screwdriver';
 

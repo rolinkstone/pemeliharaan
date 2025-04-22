@@ -23,7 +23,7 @@ class PermintaanDriverResource extends Resource
 {
     protected static ?string $model = PermintaanDriver::class;
 
-    protected static ?string $navigationGroup = 'PERMINTAAN';
+    protected static ?string $navigationGroup = 'ASET';
     protected static ?string $navigationLabel = 'Permintaan Driver';
     protected static ?string $navigationIcon = 'heroicon-s-user';
 
