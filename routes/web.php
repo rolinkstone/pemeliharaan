@@ -27,7 +27,7 @@ Route::get('/generate-pdf/{id}', [PdfController::class, 'generatePdf'])->name('g
 // Ensure this route is correctly defined
 
 
-Route::get('/cetak-pdf/{id}', [TicketController::class, 'cetakPdf'])->name('cetak-pdf');
+Route::get('/ticket-pdf/{id}', [TicketController::class, 'ticketPdf'])->name('ticket-pdf');
 Route::get('/spb-pdf/{id}', [SpbController::class, 'spbPdf'])->name('spb-pdf');
 
 Route::get('/storage/bukti_bayar/{filename}', function ($filename) {

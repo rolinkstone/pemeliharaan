@@ -52,61 +52,98 @@
         }
     </style>
 </head>
-<body>
 
+<body>
+<div class="small" style="text-align: right;">POM-14.02/CFM.02/SOP.01/IK.16A.01/F.03</div>
+<div style="text-align:center;">
+    <img src="{{ $logo_base64 }}" width="75" style="display: block; margin: 0 auto;">
+
+    </div>
+<br>
     <div class="header page-break">
-        <h1>LAPORAN KERUSAKAN ALAT ELEKTRONIK PERKANTORAN</h1>
-        <p><strong>No. Laporan:</strong> LK-20250222-001</p>
-        <p><strong>Status:</strong> Selesai</p>
-        <p><strong>Jenis Laporan:</strong> Kerusakan</p>
+        <h1>Laporan  {{ $jenis_laporan }} {{ $tipe_alat }}</h1>
+        <p><strong>No. Laporan:</strong>  {{ $no_ticket }}</p>
+        <p><strong>Status:</strong> ---</p>
+        <p><strong>Jenis Laporan:</strong> {{ $jenis_laporan }}</p>
     </div>
 
     <div class="section page-break">
         <h2>INFORMASI LAPORAN</h2>
-        <p><strong>Uraian Laporan:</strong></p>
-        <p>Tidak bisa membuka Google Chrome padahal sudah di-install ulang.</p>
-        <p><strong>Jenis Barang:</strong> PC Unit</p>
-        <p><strong>Nama Barang:</strong> HP Desktop 280 G1</p>
-        <p><strong>Kode Barang:</strong> 3100102001</p>
-        <p><strong>Ruangan:</strong> TU Umum</p>
-        <p><strong>Tipe Alat:</strong> Alat Elektronik Perkantoran</p>
-        <p><strong>Tanggal Laporan:</strong> 2025-02-22</p>
-        <p><strong>Ditujukan Ke:</strong> Tim TI</p>
-        <p><strong>Isi Laporan:</strong></p>
-        <p>dsadasdasdas</p>
+        <p><strong>Uraian Laporan:</strong> {{ $uraian_laporan }}</p>
+        
+        <p><strong>Jenis Barang:</strong> {{ $jenis_barang }}</p>
+        <p><strong>Nama Barang:</strong> {{ $nama }}</p>
+        <p><strong>Kode Barang:</strong> {{ $kode_barang }}</p>
+        <p><strong>Ruangan:</strong> {{ $ruangan }}</p>
+        <p><strong>Tipe Alat:</strong>{{ $tipe_alat }}</p>
+        <p><strong>Tanggal Laporan:</strong>{{ $tanggal }}</p>
+        <br>
+        <h2>DISPOSISI</h2>
+
+      @if($items && count($items))
+          
+                @foreach($items as $item)
+                <p><strong>Ditujukan Ke:</strong> {{ $item->ditujukan_ke }}<p>
+                <p><strong>Disposisi:</strong> {{ $item->isi }}</p>
+                <br>
+                <h2>TINDAK LANJUT</h2>
+                <p><strong>Diserahkan Ke:</strong> {{ $item->diserahkan }}</p>
+                <p><strong>Pada Tanggal:</strong> {{ $item->tanggal }}</p>
+                @endforeach
+           
+        @else
+            <p>Detail Pegawai Belum Diinput</p>
+        @endif
+
+      
     </div>
 
-    <div class="section page-break">
-        <h2>TINDAK LANJUT</h2>
-        <p><strong>Diserahkan Kepada:</strong> Teknisi Internal</p>
-        <p><strong>Tanggal Tindak Lanjut:</strong> 2025-02-24</p>
-        <p><strong>Deskripsi Kerusakan:</strong> dsadas</p>
-        <p><strong>Hasil Pemeriksaan:</strong> dasd</p>
-    </div>
+  
 
     <div class="section page-break">
         <h2>PENYELESAIAN TINDAK LANJUT</h2>
-        <p><strong>Kesimpulan:</strong> Dapat Digunakan Kembali</p>
-        <p><strong>Catatan:</strong> dasds</p>
-        <p><strong>Tanggal Penyelesaian:</strong> 2025-02-24</p>
-        <p><strong>Nama Petugas:</strong> Rolly</p>
+       
+        @if($perbaikanItems && count($perbaikanItems))
+          
+          @foreach($perbaikanItems as $perbaikanItem)
+          <p><strong>Deskripsi Kerusakan:</strong> {{ $perbaikanItem->kerusakan }}</p>
+            <p><strong>Hasil Pemeriksaan:</strong> {{ $perbaikanItem->hasil }}</p>
+            <p><strong>Kesimpulan:</strong> {{ $perbaikanItem->kesimpulan }}</p>
+            <p><strong>Catatan:</strong> {{ $perbaikanItem->catatan }}</p>
+            <p><strong>Tanggal Penyelesaian:</strong> {{ $perbaikanItem->tanggal }}</p>
+           
+          @endforeach
+     
+  @else
+      <p>Detail Pegawai Belum Diinput</p>
+  @endif
     </div>
 
-    <div class="signature page-break">
-        <h2>TANDA TANGAN</h2>
-        <p><strong>Petugas Penanggung Jawab:</strong></p>
-        <p>_________________________</p>
-        <p>(Rolly)</p>
-        <p><strong>Penerima Laporan:</strong></p>
-        <p>_________________________</p>
-        <p>(Nama Penerima)</p>
+    <div style="text-align: center; margin-top: 50px;">
+  <div style="text-align: left; width: 180px; height: 150px; margin: 0 40px; display: inline-block; vertical-align: top;">
+    <div class="kolom-ttd">
+      <strong>Nama Petugas</strong><br>
+      <br><br><br>
+      <strong>  <p><strong>{{ $perbaikanItem->nama }}</p></strong>
     </div>
+  </div>
+
+  <div style="text-align: left; width: 180px; height: 150px; margin: 0 40px; display: inline-block; vertical-align: top;">
+    <div class="kolom-ttd">
+      <strong>Pelapor</strong><br>
+      <br><br><br>
+      <strong>  <p><strong>{{ $nama_pelapor }}</p></strong>
+    </div>
+  </div>
+
+  
+</div>
 
     <div class="footer page-break">
         <p><strong>Catatan:</strong></p>
         <ul>
             <li>Pastikan laporan disimpan sebagai arsip.</li>
-            <li>Jika terdapat masalah lebih lanjut, segera hubungi Tim TI.</li>
+            <li>Jika terdapat masalah lebih lanjut, segera hubungi Tim BMN.</li>
         </ul>
     </div>
 

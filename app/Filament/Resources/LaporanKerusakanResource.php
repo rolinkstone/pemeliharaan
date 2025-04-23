@@ -343,13 +343,12 @@ class LaporanKerusakanResource extends Resource
                     }),
                     
                    
-                   // Tindakan Cetak PDF
-                   Action::make('cetak_pdf')
-                   ->icon('heroicon-o-printer') // Hanya menampilkan ikon printer
-                   ->url(fn ($record) => route('cetak-pdf', ['id' => $record->id]))
-                   ->openUrlInNewTab()
-                   ->color('success'), // Tombol berwarna hijau
-                   
+                    Tables\Actions\Action::make('ticket')
+                    ->label('Ticket')
+                    ->icon('heroicon-o-printer') // Hanya menampilkan ikon printer
+                    ->url(fn ($record) => route('ticket-pdf', ['id' => $record->id]))
+                    ->openUrlInNewTab()
+                    ->color('success'),
                                 
                 Tables\Actions\DeleteAction::make()
                         ->visible(function ($record) {
