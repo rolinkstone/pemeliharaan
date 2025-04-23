@@ -63,7 +63,13 @@
     <div class="header page-break">
         <h1>Laporan  {{ $jenis_laporan }} {{ $tipe_alat }}</h1>
         <p><strong>No. Laporan:</strong>  {{ $no_ticket }}</p>
-        <p><strong>Status:</strong> ---</p>
+        <p><strong>Status:</strong> <p><strong>Status:</strong> 
+    @if($perbaikanItems && count($perbaikanItems))
+        Selesai
+    @else
+        On Proses
+    @endif
+</p>
         <p><strong>Jenis Laporan:</strong> {{ $jenis_laporan }}</p>
     </div>
 
@@ -92,7 +98,7 @@
                 @endforeach
            
         @else
-            <p>Detail Pegawai Belum Diinput</p>
+        <p>Data Belum Diinput</p>
         @endif
 
       
@@ -114,9 +120,7 @@
            
           @endforeach
      
-  @else
-      <p>Detail Pegawai Belum Diinput</p>
-  @endif
+ 
     </div>
 
     <div style="text-align: center; margin-top: 50px;">
@@ -127,7 +131,9 @@
       <strong>  <p><strong>{{ $perbaikanItem->nama }}</p></strong>
     </div>
   </div>
-
+  @else
+      <p>Data Belum Diinput</p>
+  @endif
   <div style="text-align: left; width: 180px; height: 150px; margin: 0 40px; display: inline-block; vertical-align: top;">
     <div class="kolom-ttd">
       <strong>Pelapor</strong><br>
