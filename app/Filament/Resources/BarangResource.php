@@ -22,7 +22,7 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\Grid;
-
+use Filament\Forms\Components\Fieldset;
 
 
 
@@ -39,23 +39,26 @@ class BarangResource extends Resource
         ->schema([
           
 
-            Select::make('jenis_barang')
+            Fieldset::make('Jenis Barang')
+    ->schema([
+        Select::make('jenis_barang')
             ->label('Jenis Barang')
-            ->required()
-            ->options([
-                'Mini Komputer' => 'Mini Komputer',
-                'LAN' => 'LAN',
-                'PC Unit' => 'PC Unit',
-                'Notebook' => 'Notebook',
-                'Speaker' => 'Speaker',
-                'Printer' => 'Printer',
-                'Scanner' => 'Scanner',
-                'Harddisk' => 'Harddisk',
-                'PC Server' => 'PC Server',
-                'Router' => 'Router',
-                'Modem' => 'Modem',
-                    ])
-            ->searchable(), // Jika ingin bisa dicari
+            ->options(
+                Barang::query()
+                    ->select('jenis_barang')
+                    ->distinct()
+                    ->pluck('jenis_barang', 'jenis_barang')
+                    ->toArray()
+            )
+            ->searchable()
+            ->reactive()
+            ->afterStateUpdated(fn ($state, callable $set) => $set('jenis_barang_baru', null)),
+
+            Forms\Components\TextInput::make('jenis_barang')
+            ->label('Jenis Barang (Lainnya)')
+            ->visible(fn (callable $get) => !in_array($get('jenis_barang'), Barang::query()->distinct()->pluck('jenis_barang')->toArray()))
+            ->required(fn (callable $get) => !in_array($get('jenis_barang'), Barang::query()->distinct()->pluck('jenis_barang')->toArray())),
+    ]), // Jika ingin bisa dicari
 
             Forms\Components\TextInput::make('kode_barang')
             ->label('Kode Barang')
@@ -100,8 +103,7 @@ class BarangResource extends Resource
 
             Forms\Components\TextInput::make('bast')
             ->label('No BAST')
-            ->maxLength(10)
-            ->rule('regex:/^\d+$/'),
+            ->maxLength(10),
 
             Forms\Components\TextInput::make('keterangan')
             ->label('Keterangan')
