@@ -145,6 +145,8 @@ class LaporanKerusakanResource extends Resource
                     'Alat Elektronik Perkantoran' => 'Alat Elektronik Perkantoran',
                     'Alat Elektronik Rumah Tangga' => 'Alat Elektronik Rumah Tangga',
                     'Sarana Prasarana Pendukung Bangunan' => 'Sarana Prasarana Pendukung Bangunan',
+                    'Kendaraan Roda 4' => 'Kendaraan Roda 4',
+                    'Kendaraan Roda 2' => 'Kendaraan Roda 2',
                     'Lainnya' => 'Lainnya',
                          ])
                 ->searchable(), // Jika ingin bisa dicari
