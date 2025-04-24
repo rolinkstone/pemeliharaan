@@ -139,27 +139,36 @@ class KendaraanDinasResource extends Resource
                     // Format tampilan
                     return '<strong>'  . '</strong><br><span style="color: ' . $color . ';" class="' . $blinkingClass . '">' . $status . '</span>';
                 }),
-                
-                Tables\Columns\TextColumn::make('no_st')->label('NO ST')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('fungsi')->label('FUNGSI')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('tanggal')->label('WAKTU PENGGUNAAN')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('tujuan')->label('TUJUAN')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('combined_column')
-                ->label('JENIS  & KENDARAAN') // Label untuk kolom gabungan
-                ->getStateUsing(function ($record) {
-                    // Gabungkan nilai dari jenis_kendaraan dan kendaraan
-                    return $record->jenis_kendaraan . ' - ' . $record->kendaraan;
+                Tables\Columns\TextColumn::make('no_st')
+                ->label('IDENTITAS PENGGUNA')
+                ->formatStateUsing(function ($record) {
+                    // Gabungkan nilai dari field-field yang diinginkan
+                    return 
+                        'No ST: ' . ($record->no_st ?? 'N/A') . '<br>' .
+                        'PIC: ' . ($record->nama ?? 'N/A') . '<br>' .
+                        'Fungsi: ' . ($record->fungsi ?? 'N/A') . '<br>' .
+                       
+                        'Waktu Penggunaan: ' . ($record->tanggal ?? 'N/A');
                 })
-                ->sortable() // Tetap bisa di-sort
-                ->searchable(['jenis_kendaraan', 'kendaraan']),
-                Tables\Columns\TextColumn::make('driver')
-                ->label('MENGGUNAKAN DRIVER')
-                ->formatStateUsing(function ($state) {
-                    return $state ?? 'Tidak';
-                })
+                ->html() // Aktifkan rendering HTML
                 ->sortable()
                 ->searchable(),
-                Tables\Columns\TextColumn::make('nama')->label('NAMA PIC')->sortable()->searchable(),
+
+                Tables\Columns\TextColumn::make('kendaraanDinasDetail.kendaraan')
+                ->label('KENDARAAN')
+                ->formatStateUsing(function ($record) {
+                    $kendaraan = $record->kendaraanDinasDetail->first()?->kendaraan ?? 'N/A';
+
+                    return 
+                        ' ' . $kendaraan . '<br>' .
+                        'Menggunakan Driver: ' . (($record->driver ?? false) ? 'Ya' : 'Tidak') . '<br>' .
+                        'Tujuan: ' . ($record->tujuan ?? 'N/A');
+                })
+                ->html()
+                ->sortable()
+                ->searchable(),
+           
+               
             ])
             ->filters([
                 //

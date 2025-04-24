@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Models\KendaraanDinas;
 use Filament\Forms\Components\TextInput;
+use App\Models\Barang;
 
 
 
@@ -48,11 +49,10 @@ class KendaraanDinasDetailRelationManager extends RelationManager
 
                 Forms\Components\Select::make('kendaraan')
                 ->label('Kendaraan')
-                ->options([
-                    'Lab Ling (KH 7536 AU)' => 'Lab Ling (KH 7536 AU)',
-                    'Innova (KH 1120 AU)' => 'Innova (KH 1120 AU)',
-                    
-                ])
+                ->options(fn () => 
+                    Barang::where('jenis_barang', 'Kendaraan Roda 4')
+                        ->pluck('nama', 'nama') // display & store as nama
+                )
                 ->searchable(),
                
 
