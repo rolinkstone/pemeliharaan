@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laporan Kerusakan Alat Elektronik Perkantoran</title>
+    <title> Laporan  {{ $jenis_laporan }} {{ $tipe_alat }}</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -63,7 +63,7 @@
     <div class="header page-break">
         <h1>Laporan  {{ $jenis_laporan }} {{ $tipe_alat }}</h1>
         <p><strong>No. Laporan:</strong>  {{ $no_ticket }}</p>
-        <p><strong>Status:</strong> <p><strong>Status:</strong> 
+        <p><strong>Status:</strong>
     @if($perbaikanItems && count($perbaikanItems))
         Selesai
     @else
