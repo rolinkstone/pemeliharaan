@@ -30,7 +30,7 @@ use Illuminate\Support\Facades\DB;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Tables\Actions\Action;
-
+use App\Models\User;
 
 class LaporanKerusakanResource extends Resource
 {
@@ -42,13 +42,39 @@ class LaporanKerusakanResource extends Resource
 
      // Menambahkan badge dengan jumlah laporan yang belum diproses
      public static function getNavigationBadge(): ?string
-     {
-         // Periksa role pengguna
-         if (Auth::check() && Auth::user()->hasAnyRole(['super_admin', 'kabag_tu'])) {
-            return static::getModel()::whereDoesntHave('disposisikerusakan')->count();
+        {
+            if (!Auth::check()) {
+                return null;
+            }
+
+            $query = static::getModel()::whereDoesntHave('disposisikerusakan');
+
+            if (Auth::user()->hasRole('super_admin')) {
+                // super_admin: tampilkan semua data yang belum punya disposisikerusakan
+                return $query->count();
+            }
+
+            if (Auth::user()->hasRole('kabag_tu')) {
+                $query->where(function ($q) {
+                    $q->whereIn('kabag_tu_id', [0, 1]);
+
+                    if (Auth::user()->hasRole('katim')) {
+                        $q->orWhere('katim_id', Auth::id());
+                    }
+                });
+
+                return $query->count();
+            }
+
+            if (Auth::user()->hasRole('katim')) {
+                $query->where('katim_id', Auth::id());
+                return $query->count();
+            }
+
+            return null;
         }
-         return null; // Tidak menampilkan badge jika role tidak sesuai
-     }
+
+
  
      // Warna badge (opsional)
      public static function getNavigationBadgeColor(): ?string
@@ -176,6 +202,27 @@ class LaporanKerusakanResource extends Resource
                 })
                 ->disabled()
                 ->dehydrated(),
+                Forms\Components\Select::make('katim_id')
+                ->label('Ketua TIM Kerja')
+                ->options(function () {
+                            return User::whereHas('roles', function ($query) {
+                                $query->where('name', 'katim'); // Ambil user dengan role "katim"
+                            })->pluck('name', 'id'); // Ambil nama user sebagai label, id sebagai value
+                        })
+                ->required()
+                ->disabled(fn (string $operation): bool => $operation === 'edit')
+                ->searchable(),
+
+
+                Forms\Components\Select::make('kabag_tu_id')
+                ->label('Persetujuan Katim')
+                ->options([
+                    1 => 'Ya',   // Nilai 1 untuk "Ya"
+                    0 => 'Tidak', // Nilai 0 untuk "Tidak"
+                ])
+                ->visible(function () {
+                    return auth()->user()->hasRole('katim'); // Hanya muncul untuk role 'katim'
+                }),
 
             ]);
             
@@ -184,6 +231,28 @@ class LaporanKerusakanResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+        ->query(
+            static::getEloquentQuery()
+                ->when(auth()->user()->hasRole('super_admin'), fn ($query) => $query)
+                ->when(auth()->user()->hasRole('kabag_tu'), function ($query) {
+                    $query->where(function ($q) {
+                        $q->whereIn('kabag_tu_id', [0, 1]);
+        
+                        // Jika juga katim, tampilkan juga data dia sebagai katim
+                        if (auth()->user()->hasRole('katim')) {
+                            $q->orWhere('katim_id', auth()->id());
+                        }
+                    });
+                })
+                ->when(
+                    auth()->user()->hasRole('katim') && !auth()->user()->hasRole('kabag_tu'),
+                    fn ($query) => $query->where('katim_id', auth()->id())
+                )
+        )
+        
+        
+        
+        
             ->columns([
                 TextColumn::make('no_ticket')
                 ->label('NOMOR TIKET')
@@ -221,7 +290,13 @@ class LaporanKerusakanResource extends Resource
                         'Kode Barang: ' . ($record->kode_barang ?? 'N/A') . '<br>' .
                         'Ruangan: ' . ($record->ruangan ?? 'N/A') . '<br>' .
                         'Tipe Alat: ' . ($record->tipe_alat ?? 'N/A') . '<br>' .
-                        'Tanggal: ' . ($record->tanggal ?? 'N/A');
+                        'Tanggal: ' . ($record->tipe_alat ?? 'N/A') . '<br>' .'<br>'.
+
+                       'Persetujuan Kabag/Katim: ' . ($record->kabag_tu_id == 1 
+                                                ? 'Ya' 
+                                                : ($record->kabag_tu_id == 0 
+                                                    ? '-' 
+                                                    : 'Belum diproses Katim'));
                 })
                 ->html() // Aktifkan rendering HTML
                 ->sortable()
@@ -329,7 +404,7 @@ class LaporanKerusakanResource extends Resource
                         $user = auth()->user();
 
                         // Jika pengguna adalah super_admin atau verifikator, tombol selalu muncul
-                        if ($user->hasAnyRole(['super_admin', 'kabag_tu'])) {
+                        if ($user->hasAnyRole(['super_admin', 'kabag_tu', 'katim'])) {
                             return true;
                         }
 
@@ -368,39 +443,54 @@ class LaporanKerusakanResource extends Resource
                 ->modifyQueryUsing(function (Builder $query) {
                     $user = auth()->user();
                 
-                    // Jika pengguna bukan super_admin, verifikator, atau teknisi, filter data berdasarkan user_id
-                    if (!$user->hasRole('super_admin') && !$user->hasRole('kabag_tu') && !$user->hasRole('teknisi')) {
-                        $query->where('user_id', $user->id);
+                    // Jika bukan super_admin atau kabag_tu, hanya tampilkan data berdasarkan katim_id
+                    if (!$user->hasRole('super_admin') && !$user->hasRole('kabag_tu')) {
+                        $query->where('katim_id', $user->id);
                     }
-                    // Jika super_admin, verifikator, atau teknisi, tidak perlu filter (lihat semua data)
+                
+                    // Jika super_admin atau kabag_tu, tampilkan semua data
                 });
                 
     }
 
-   public static function getRelations(): array
-{
-    $relations = [];
-
-    // Periksa apakah pengguna sudah login
-    if (auth()->check()) {
-        // Tambahkan relasi DisposisiKerusakanRelationManager untuk super_admin atau verifikator
-        if (auth()->user()->hasRole('super_admin') || auth()->user()->hasRole('kabag_tu')) {
-            $relations[] = RelationManagers\DisposisiKerusakanRelationManager::class;
-        }
-
-        // Tambahkan relasi PerbaikanKerusakanRelationManager untuk teknisi dan super_admin
-        if (auth()->user()->hasRole('teknisi') || auth()->user()->hasRole('super_admin')) {
-            // Periksa apakah ada DisposisiKerusakan dengan ditujukan_ke yang tidak kosong
-            $hasDisposisi = \App\Models\DisposisiKerusakan::whereNotNull('ditujukan_ke')->exists();
-
-            if ($hasDisposisi) {
-                $relations[] = RelationManagers\PerbaikanKerusakanRelationManager::class;
+    public static function getRelations(): array
+    {
+        $relations = [];
+    
+        if (auth()->check()) {
+            $user = auth()->user();
+    
+            // Ambil record yang sedang diedit/dilihat
+            $record = request()->route('record'); // Ini akan berisi ID atau model, tergantung routing
+    
+            // Ambil instance model LaporanKerusakan
+            $laporanKerusakan = $record instanceof \App\Models\LaporanKerusakan
+                ? $record
+                : \App\Models\LaporanKerusakan::find($record);
+    
+            // Tampilkan DisposisiKerusakan jika role sesuai dan kabag_tu_id == 1
+            if (
+                $user->hasRole('super_admin') || $user->hasRole('kabag_tu')
+            ) {
+                if ($laporanKerusakan && $laporanKerusakan->kabag_tu_id == 1) {
+                    $relations[] = RelationManagers\DisposisiKerusakanRelationManager::class;
+                }
+            }
+    
+            // Tampilkan PerbaikanKerusakan jika teknisi/super_admin dan ada disposisi
+            if ($user->hasRole('teknisi') || $user->hasRole('super_admin')) {
+                $hasDisposisi = \App\Models\DisposisiKerusakan::whereNotNull('ditujukan_ke')->exists();
+    
+                if ($hasDisposisi) {
+                    $relations[] = RelationManagers\PerbaikanKerusakanRelationManager::class;
+                }
             }
         }
+    
+        return $relations;
     }
-
-    return $relations;
-}
+    
+    
 
     public static function getPages(): array
     {

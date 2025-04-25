@@ -15,7 +15,7 @@ class LaporanKerusakanPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('view_any_perawatan::kendaraan');
+        return $user->can('view_any_laporan::kerusakan');
     }
 
     /**
@@ -23,7 +23,7 @@ class LaporanKerusakanPolicy
      */
     public function view(User $user, LaporanKerusakan $laporanKerusakan): bool
     {
-        return $user->can('view_perawatan::kendaraan');
+        return $user->can('view_laporan::kerusakan');
     }
 
     /**
@@ -31,7 +31,7 @@ class LaporanKerusakanPolicy
      */
     public function create(User $user): bool
     {
-        return $user->can('create_perawatan::kendaraan');
+        return $user->can('create_laporan::kerusakan');
     }
 
     /**
@@ -39,7 +39,7 @@ class LaporanKerusakanPolicy
      */
     public function update(User $user, LaporanKerusakan $laporanKerusakan): bool
     {
-        return $user->can('update_perawatan::kendaraan');
+        return $user->can('update_laporan::kerusakan');
     }
 
     /**
@@ -47,7 +47,7 @@ class LaporanKerusakanPolicy
      */
     public function delete(User $user, LaporanKerusakan $laporanKerusakan): bool
     {
-        return $user->can('delete_perawatan::kendaraan');
+        return $user->can('delete_laporan::kerusakan');
     }
 
     /**
@@ -55,7 +55,7 @@ class LaporanKerusakanPolicy
      */
     public function deleteAny(User $user): bool
     {
-        return $user->can('delete_any_perawatan::kendaraan');
+        return $user->can('delete_any_laporan::kerusakan');
     }
 
     /**
@@ -63,7 +63,7 @@ class LaporanKerusakanPolicy
      */
     public function forceDelete(User $user, LaporanKerusakan $laporanKerusakan): bool
     {
-        return $user->can('force_delete_perawatan::kendaraan');
+        return $user->can('force_delete_laporan::kerusakan');
     }
 
     /**
@@ -71,7 +71,7 @@ class LaporanKerusakanPolicy
      */
     public function forceDeleteAny(User $user): bool
     {
-        return $user->can('force_delete_any_perawatan::kendaraan');
+        return $user->can('force_delete_any_laporan::kerusakan');
     }
 
     /**
@@ -79,7 +79,7 @@ class LaporanKerusakanPolicy
      */
     public function restore(User $user, LaporanKerusakan $laporanKerusakan): bool
     {
-        return $user->can('restore_perawatan::kendaraan');
+        return $user->can('restore_laporan::kerusakan');
     }
 
     /**
@@ -87,7 +87,7 @@ class LaporanKerusakanPolicy
      */
     public function restoreAny(User $user): bool
     {
-        return $user->can('restore_any_perawatan::kendaraan');
+        return $user->can('restore_any_laporan::kerusakan');
     }
 
     /**
@@ -95,7 +95,7 @@ class LaporanKerusakanPolicy
      */
     public function replicate(User $user, LaporanKerusakan $laporanKerusakan): bool
     {
-        return $user->can('replicate_perawatan::kendaraan');
+        return $user->can('replicate_laporan::kerusakan');
     }
 
     /**
@@ -103,6 +103,6 @@ class LaporanKerusakanPolicy
      */
     public function reorder(User $user): bool
     {
-        return $user->can('reorder_perawatan::kendaraan');
+        return $user->can('reorder_laporan::kerusakan');
     }
 }

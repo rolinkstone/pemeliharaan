@@ -14,7 +14,7 @@ class LaporanKerusakan extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'jenis_laporan', 'uraian_laporan', 'jenis_barang','nama', 'kode_barang', 'ruangan','tipe_alat','tanggal','user_id','nama_pelapor','no_ticket',
+        'jenis_laporan', 'uraian_laporan', 'jenis_barang','nama', 'kode_barang', 'ruangan','tipe_alat','tanggal','user_id','nama_pelapor','no_ticket','katim_id','kabag_tu_id',
     ];
     
     protected static function boot()
@@ -49,6 +49,7 @@ class LaporanKerusakan extends Model
     {
         return $this->hasOne(DisposisiKerusakan::class, 'laporan_kerusakan_id');
     }
+    
     
     public static function generateNoTiket()
     {
