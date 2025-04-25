@@ -126,7 +126,7 @@ class LaporanKerusakanResource extends Resource
 
                     // Menggunakan nama dan nup sebagai value
                     return Barang::where('jenis_barang', $jenisBarang)
-                        ->pluck(DB::raw("CONCAT(nama, ' - NUP : ', nup)"), 'nama'); // Gabungkan nama dan nup
+                        ->pluck(DB::raw("CONCAT(nama, ' - NUP : ', nup)"), 'id'); // Gabungkan nama dan nup
                 })
                 ->reactive() // Memastikan perubahan di-refresh otomatis
                 ->disabled(fn (callable $get) => !$get('jenis_barang'))
