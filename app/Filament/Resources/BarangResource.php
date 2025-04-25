@@ -35,11 +35,8 @@ class BarangResource extends Resource
 
     public static function form(Form $form): Form
     {
-        return $form
-        ->schema([
-          
-
-            Fieldset::make('Jenis Barang')
+    return $form
+    ->schema([Fieldset::make('Jenis Barang')
     ->schema([
         Select::make('jenis_barang')
             ->label('Jenis Barang')

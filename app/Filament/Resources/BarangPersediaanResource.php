@@ -22,7 +22,7 @@ use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\Select;
 use Carbon\Carbon;
 use App\Models\Kategori;
-
+use Filament\Forms\Components\Fieldset;
 use Filament\Tables\Actions\Action;
 
 
@@ -37,16 +37,57 @@ class BarangPersediaanResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
-            ->schema([
-                Forms\Components\TextInput::make('jenis_barang')
-                    ->label('Jenis Barang')
-                    ->required()
-                    ->maxLength(255),
+        ->schema([Fieldset::make('Jenis Barang')
+        ->schema([
+            Select::make('jenis_barang')
+                ->label('Jenis Barang')
+                ->options(
+                    BarangPersediaan::query()
+                        ->select('jenis_barang')
+                        ->distinct()
+                        ->pluck('jenis_barang', 'jenis_barang')
+                        ->toArray()
+                )
+                ->searchable()
+                ->reactive()
+                ->afterStateUpdated(fn ($state, callable $set) => $set('jenis_barang_baru', null)),
     
-                Forms\Components\Select::make('kategori')
-                    ->label('Kategori')
-                    ->options(Kategori::pluck('kategori', 'kategori'))
-                    ->required(),
+                Forms\Components\TextInput::make('jenis_barang')
+                ->label('Jenis Barang (Lainnya)')
+                ->visible(fn (callable $get) => !in_array($get('jenis_barang'), BarangPersediaan::query()->distinct()->pluck('jenis_barang')->toArray()))
+                ->required(fn (callable $get) => !in_array($get('jenis_barang'), BarangPersediaan::query()->distinct()->pluck('jenis_barang')->toArray()))
+                ->formatStateUsing(fn ($state) => strtoupper($state)) // untuk ditampilkan dalam uppercase
+                ->dehydrateStateUsing(fn ($state) => strtoupper($state)), // untuk disimpan dalam uppercase
+        ]), // Jika ingin bisa dicari
+
+       Fieldset::make('Kategori')
+        ->schema([
+            Select::make('kategori')
+                ->label('Kategori')
+                ->options(
+                    BarangPersediaan::query()
+                        ->select('kategori')
+                        ->distinct()
+                        ->pluck('kategori', 'kategori')
+                        ->toArray()
+                )
+                ->searchable()
+                ->reactive()
+                ->afterStateUpdated(fn ($state, callable $set) => $set('kategori_baru', null)),
+
+            Forms\Components\TextInput::make('kategori')
+                ->label('Kategori (Lainnya)')
+                ->extraAttributes(['style' => 'text-transform: uppercase']) // ubah tampilan
+                ->visible(fn (callable $get) => !in_array($get('kategori'), BarangPersediaan::query()->distinct()->pluck('kategori')->toArray()))
+                ->required(fn (callable $get) => !in_array($get('kategori'), BarangPersediaan::query()->distinct()->pluck('kategori')->toArray()))
+                ->formatStateUsing(fn ($state) => strtoupper($state)) // untuk ditampilkan dalam uppercase
+                ->dehydrateStateUsing(fn ($state) => strtoupper($state)), // untuk disimpan dalam uppercase
+        ]),
+      
+                Forms\Components\TextInput::make('nama_barang')
+                ->label('Nama Barang')
+                ->required()
+                ->maxLength(255),
     
                 Forms\Components\TextInput::make('satuan')
                     ->label('Satuan')
@@ -182,6 +223,7 @@ class BarangPersediaanResource extends Resource
                                                 
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -203,6 +245,7 @@ class BarangPersediaanResource extends Resource
             'index' => Pages\ListBarangPersediaans::route('/'),
             'create' => Pages\CreateBarangPersediaan::route('/create'),
             'edit' => Pages\EditBarangPersediaan::route('/{record}/edit'),
+          
         ];
     }
 }
