@@ -84,20 +84,25 @@ class BarangPersediaanResource extends Resource
                 ->dehydrateStateUsing(fn ($state) => strtoupper($state)), // untuk disimpan dalam uppercase
         ]),
       
-                Forms\Components\TextInput::make('nama_barang')
+        Forms\Components\Grid::make(3)
+        ->schema([
+            Forms\Components\TextInput::make('nama_barang')
                 ->label('Nama Barang')
                 ->required()
                 ->maxLength(255),
     
-                Forms\Components\TextInput::make('satuan')
-                    ->label('Satuan')
-                    ->required()
-                    ->maxLength(255),
+            Forms\Components\TextInput::make('satuan')
+                ->label('Satuan')
+                ->required()
+                ->maxLength(255),
     
-                Forms\Components\TextInput::make('saldo_awal')
-                    ->label('Saldo Awal')
-                    ->required()
-                    ->maxLength(255),
+            Forms\Components\TextInput::make('saldo_awal')
+                ->label('Saldo Awal')
+                ->required()
+                ->numeric()
+                ->maxLength(255),
+        ]),
+    
             ]);
     }
 
