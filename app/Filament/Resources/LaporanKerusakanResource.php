@@ -131,19 +131,19 @@ class LaporanKerusakanResource extends Resource
                 ->reactive() // Memastikan perubahan di-refresh otomatis
                 ->disabled(fn (callable $get) => !$get('jenis_barang'))
                 ->afterStateUpdated(function ($state, callable $set) {
+                    \Log::info('Selected barang ID: ' . $state);
+                
                     if ($state) {
-                        $barang = Barang::where('nama', $state)->first(); // Mencari barang berdasarkan nama
-
+                        $barang = Barang::find($state);
+                        \Log::info('Barang: ', $barang?->toArray());
+                
                         if ($barang) {
-                            // Set kode_barang berdasarkan barang yang dipilih
                             $set('kode_barang', $barang->kode_barang);
-                            // Set lokasi/ruangan berdasarkan barang yang dipilih
                             $set('ruangan', $barang->ruangan);
                         }
                     } else {
-                        // Reset jika tidak ada pilihan
                         $set('kode_barang', ''); 
-                        $set('ruangan', ''); // Reset lokasi
+                        $set('ruangan', '');
                     }
                 }),
 
@@ -281,24 +281,24 @@ class LaporanKerusakanResource extends Resource
                 Tables\Columns\TextColumn::make('jenis_laporan')
                 ->label('IDENTITAS SARANA PRASARANA')
                 ->formatStateUsing(function ($record) {
-                    // Gabungkan nilai dari field-field yang diinginkan
+                    $barang = \App\Models\Barang::find($record->nama); // cari nama barang berdasarkan record->nama (anggap ini ID)
+            
                     return 
                         'Jenis Laporan: ' . ($record->jenis_laporan ?? 'N/A') . '<br>' .
                         'Uraian Laporan: <div style="white-space: normal; width: 300px;">' . ($record->uraian_laporan ?? 'N/A') . '</div><br>' .
                         'Jenis Barang: ' . ($record->jenis_barang ?? 'N/A') . '<br>' .
-                        'Nama: ' . ($record->nama ?? 'N/A') . '<br>' .
+                        'Nama: ' . ($barang ? $barang->nama : '-') . '<br>' . // ambil nama barang dari tabel Barang
                         'Kode Barang: ' . ($record->kode_barang ?? 'N/A') . '<br>' .
                         'Ruangan: ' . ($record->ruangan ?? 'N/A') . '<br>' .
                         'Tipe Alat: ' . ($record->tipe_alat ?? 'N/A') . '<br>' .
-                        'Tanggal: ' . ($record->tipe_alat ?? 'N/A') . '<br>' .'<br>'.
-
-                       'Persetujuan Kabag/Katim: ' . ($record->kabag_tu_id == 1 
-                                                ? 'Ya' 
-                                                : ($record->kabag_tu_id == 0 
-                                                    ? '-' 
-                                                    : 'Belum diproses Katim'));
+                        'Tanggal: ' . ($record->tanggal ?? 'N/A') . '<br>' . '<br>' . // perbaiki juga yang salah tadi (tanggal)
+                        'Persetujuan Kabag/Katim: ' . ($record->kabag_tu_id == 1 
+                                                    ? 'Ya' 
+                                                    : ($record->kabag_tu_id == 0 
+                                                        ? '-' 
+                                                        : 'Belum diproses Katim'));
                 })
-                ->html() // Aktifkan rendering HTML
+                ->html()
                 ->sortable()
                 ->searchable(),
 

@@ -8,7 +8,7 @@ use App\Models\LaporanKerusakan;
 use App\Models\DisposisiKerusakan; // Ganti dengan model Anda
 use App\Models\PerbaikanKerusakan; // Tambahkan ini di bagian atas
 
-
+use App\Models\Barang;
 use App\Models\User; // sesuaikan jika modelnya Pegawai atau lainnya
 
 class TicketController extends Controller
@@ -32,15 +32,19 @@ class TicketController extends Controller
     $katim = User::find($record->katim_id); // ini ambil nama berdasarkan id
     $kabag_tu = User::find($record->kabag_tu_id); // ini ambil nama berdasarkan id
     $items = DisposisiKerusakan::where('laporan_kerusakan_id', $record->id)->get();
+    $user = User::find($record->user_id);
+    $barang = Barang::find($record->nama);
+
     // Tambahan untuk ambil data dari PerbaikanKerusakan
     $perbaikanItems = PerbaikanKerusakan::where('laporan_kerusakan_id', $record->id)->get();
 
     $data = [
+        'fungsi' => $user ? $user->fungsi : '',
         'jenis_laporan' => $record->jenis_laporan,
         'no_ticket' => $record->no_ticket,
         'uraian_laporan' => $record->uraian_laporan,
         'jenis_barang' => $record->jenis_barang,
-        'nama' => $record->nama,
+        'nama' => $barang ? $barang->nama : '',
         'kode_barang' => $record->kode_barang,
         'ruangan' => $record->ruangan,
         'tipe_alat' => $record->tipe_alat,
@@ -51,7 +55,17 @@ class TicketController extends Controller
         
         
         'nama_pelapor' => $record->nama_pelapor,
-      
+       'nama_katim' => $record->kabag_tu_id == 1
+        ? ($katim ? $katim->name : '-')
+        : ($record->kabag_tu_id == 0
+            ? 'Belum persetujuan Katim'
+            : '-'),// ganti katim_id ke nama katim
+       'nama_kabag_tu' => $record->kabag_tu_id == 1 
+            ? 'Maria Goretti Wijayanti, S.Farm, Apt'
+            : ($record->kabag_tu_id == 0 
+                ? '-'
+                : ($kabag_tu ? $kabag_tu->name : '-')),
+
         'logo_base64' => $logo_base64,
       
     ];
