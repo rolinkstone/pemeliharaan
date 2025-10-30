@@ -170,6 +170,8 @@ return [
         App\Providers\Filament\SistemPanelProvider::class,
         App\Providers\RouteServiceProvider::class,
         BezhanSalleh\FilamentShield\FilamentShieldServiceProvider::class,
+        Maatwebsite\Excel\ExcelServiceProvider::class,
+
         
     ])->toArray(),
 
