@@ -28,6 +28,8 @@ return array(
     'App\\Actions\\Fortify\\UpdateUserProfileInformation' => $baseDir . '/app/Actions/Fortify/UpdateUserProfileInformation.php',
     'App\\Console\\Kernel' => $baseDir . '/app/Console/Kernel.php',
     'App\\Exceptions\\Handler' => $baseDir . '/app/Exceptions/Handler.php',
+    'App\\Exports\\BarangExport' => $baseDir . '/app/Exports/BarangExport.php',
+    'App\\Exports\\LaporanKerusakanExport' => $baseDir . '/app/Exports/LaporanKerusakanExport.php',
     'App\\Filament\\Auth\\CustomLogin' => $baseDir . '/app/Filament/Auth/CustomLogin.php',
     'App\\Filament\\Resources\\BarangPersediaanResource' => $baseDir . '/app/Filament/Resources/BarangPersediaanResource.php',
     'App\\Filament\\Resources\\BarangPersediaanResource\\Pages\\CreateBarangPersediaan' => $baseDir . '/app/Filament/Resources/BarangPersediaanResource/Pages/CreateBarangPersediaan.php',

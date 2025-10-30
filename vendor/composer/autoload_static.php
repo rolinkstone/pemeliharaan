@@ -880,6 +880,8 @@ class ComposerStaticInit0e2d180f99e61e2079796831a6c5b827
         'App\\Actions\\Fortify\\UpdateUserProfileInformation' => __DIR__ . '/../..' . '/app/Actions/Fortify/UpdateUserProfileInformation.php',
         'App\\Console\\Kernel' => __DIR__ . '/../..' . '/app/Console/Kernel.php',
         'App\\Exceptions\\Handler' => __DIR__ . '/../..' . '/app/Exceptions/Handler.php',
+        'App\\Exports\\BarangExport' => __DIR__ . '/../..' . '/app/Exports/BarangExport.php',
+        'App\\Exports\\LaporanKerusakanExport' => __DIR__ . '/../..' . '/app/Exports/LaporanKerusakanExport.php',
         'App\\Filament\\Auth\\CustomLogin' => __DIR__ . '/../..' . '/app/Filament/Auth/CustomLogin.php',
         'App\\Filament\\Resources\\BarangPersediaanResource' => __DIR__ . '/../..' . '/app/Filament/Resources/BarangPersediaanResource.php',
         'App\\Filament\\Resources\\BarangPersediaanResource\\Pages\\CreateBarangPersediaan' => __DIR__ . '/../..' . '/app/Filament/Resources/BarangPersediaanResource/Pages/CreateBarangPersediaan.php',
