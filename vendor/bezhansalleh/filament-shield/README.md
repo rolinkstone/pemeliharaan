@@ -23,81 +23,165 @@
 
 # Shield
 
-The easiest and most intuitive way to add access management to your Filament Admin:
-- :fire: **Resources** 
-- :fire: **Pages** 
-- :fire: **Widgets** 
-- :fire: **Custom Permissions**
+The easiest and most intuitive way to add access management to your Filament Panels.
 
+## Features
 
-> [!NOTE] 
-> For **Filament 2.x** use **[2.x](https://github.com/bezhanSalleh/filament-shield/tree/2.x)** branch
+- 🛡️ **Complete Authorization Management**
+  - Resource Permissions
+  - Page Permissions
+  - Widget Permissions
+  - Custom Permissions
+- 🔄 **Multi-tenancy Support**
+- 🚀 **Easy Setup & Configuration**
+- 🎨 **Best UI**
+- 📦 **Policy Generation**
+- 🌐 **Translations Support**
 
-> [!IMPORTANT]
-> Prior to `v3.1.0` Shield supported [spatie/laravel-permission](https://packagist.org/packages/spatie/laravel-permission):`^5.0` and now it supports version `^6.0`. Which has some breaking changes around migrations. If you are upgrading from a version prior to `v3.1.0` please make sure to remove the old migration file and republish the new one.
+## Compatibility
+
+| Package Version | Filament Version |
+|-----------------|------------------|
+| [2.x](https://github.com/bezhanSalleh/filament-shield/tree/2.x)             | 2.x              |
+| **3.x**            | **3.x**             |
+| [4.x](https://github.com/bezhanSalleh/filament-shield/tree/4.x)             | 4.x              |
+
+<div class="filament-hidden">
+<b>Table of Contents</b>
+
+- [Shield](#shield)
+  - [Features](#features)
+  - [Requirements](#requirements)
+  - [Installation](#installation)
+    - [1. Install Package](#1-install-package)
+    - [2. Configure Auth Provider](#2-configure-auth-provider)
+    - [3. Setup Shield](#3-setup-shield)
+    - [4. Install for Panel](#4-install-for-panel)
+  - [Usage](#usage)
+      - [Configuration](#configuration)
+      - [Resources](#resources)
+        - [Default](#default)
+        - [Custom Permissions](#custom-permissions)
+        - [Configure Permission Identifier](#configure-permission-identifier)
+        - [Custom Navigation Group](#custom-navigation-group)
+      - [Pages](#pages)
+          - [Pages Hooks](#pages-hooks)
+          - [Pages Redirect Path](#pages-redirect-path)
+      - [Widgets](#widgets)
+    - [Policies](#policies)
+      - [Path](#path)
+      - [Policy Discovery](#policy-discovery)
+        - [Using Laravel 10](#using-laravel-10)
+        - [Using Laravel 11](#using-laravel-11)
+      - [Users (Assigning Roles to Users)](#users-assigning-roles-to-users)
+      - [Layout Customization](#layout-customization)
+  - [Available Commands](#available-commands)
+    - [Prohibited Commands](#prohibited-commands)
+    - [Core Commands](#core-commands)
+    - [Generate Command Options](#generate-command-options)
+      - [Translations](#translations)
+  - [Testing](#testing)
+  - [Changelog](#changelog)
+  - [Contributing](#contributing)
+  - [Security Vulnerabilities](#security-vulnerabilities)
+  - [Credits](#credits)
+  - [License](#license)
+</div>
 
 ## Installation
 
-1. Install the package via composer:
-
+### 1. Install Package
 ```bash
 composer require bezhansalleh/filament-shield
 ```
 
-2. Add the `Spatie\Permission\Traits\HasRoles` trait to your User model(s):
-
+### 2. Configure Auth Provider
+#### 2.1. Publish the config and setup your auth provider model.
+```bash
+php artisan vendor:publish --tag="filament-shield-config"
+```
 ```php
-use Illuminate\Foundation\Auth\User as Authenticatable;
+//config/filament-shield.php
+...
+    'auth_provider_model' => [
+        'fqcn' => 'App\\Models\\User',
+    ],
+...
+```
+#### 2.2 Add the `HasRoles` trait to your auth provider model:
+```php
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
     use HasRoles;
-
-    // ...
 }
 ```
-3. Publish the `config` file then setup your configuration:
+
+### 3. Setup Shield
+3.1 **Without Tenancy:**
 ```bash
-php artisan vendor:publish --tag=filament-shield-config
+php artisan shield:setup
 ```
-4. Register the plugin for the Filament Panels you want
-```php
-public function panel(Panel $panel): Panel
-{
-    return $panel
-        ->plugins([
-            \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make()
-        ]);
-}
-```
-5. Now run the following command to install shield:
+
+3.2 **With Tenancy:**
 ```bash
-php artisan shield:install
+php artisan shield:setup --tenant=App\\Models\\Team
+# Replace Team with your tenant model
 ```
-Follow the prompts and enjoy!
 
-## Filament Panels
-If you want to enable `Shield` for more than one panel then you need to register the plugin for each panel as mentioned above.
+This command will:
+- Publish core package config
+- Publish core package migrations
+- Run initial migrations
+- Publish shield config
+- Configure tenancy if specified
 
-### Panel Access
-Shield comes with the `HasPanelShield` trait which provides an easy way to integrate Shield's conventions with the Filament's panel access system.
+### 4. Install for Panel
+The install command will register the plugin for your panel automatically. Choose the appropriate installation method:
 
-The `HasPanelShield` trait provides an implementation for the `canAccessPanel` method, determining access based on whether the user possesses the `super_admin` role or the `panel_user` role. It also assigns the `panel_user` role to the user upon creation and removes it upon deletion. Ofcourse the role names can be changed from the plugin's configuration file.
-
+4.1 **Without Tenancy:**
+```bash
+php artisan shield:install admin
+# Replace 'admin' with your panel ID
+```
+Or instead of the above command you can register the plugin manually in your `xPanelProvider`:
 ```php
-use BezhanSalleh\FilamentShield\Traits\HasPanelShield;
-use Filament\Models\Contracts\FilamentUser;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Spatie\Permission\Traits\HasRoles;
-
-class User extends Authenticatable implements FilamentUser
-{
-    use HasRoles;
-    use HasPanelShield;
-    // ...
-}
+    ->plugins([
+        \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make(),
+    ])
 ```
+4.2 **With Tenancy:**
+```bash
+php artisan shield:install admin --tenant --generate-relationships
+# Replace 'admin' with your panel ID
+```
+Or instead of the above command you can register the plugin and enable tenancy manually in your `xPanelProvider`:
+```php
+    ->tenant(YourTenantModel::class)
+    ->tenantMiddleware([
+        \BezhanSalleh\FilamentShield\Middleware\SyncShieldTenant::class,
+    ], isPersistent: true)
+    ->plugins([
+        \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make(),
+    ])
+```
+This command will:
+- Register Shield plugin for your panel
+- If `--tenant` flag is provided:
+  - Activates tenancy features 
+  - Makes the panel tenantable
+  - Adds `SyncShieldTenant` middleware to the panel
+  - Configures tenant model from the config
+- If `--generate-relationships` flag is provided:
+  - Generates required relationships between resource models and the tenant model
+  - Adds necessary relationship methods in both the resource and tenant models
+
+## Usage
+
+#### Configuration
+See [config/filament-shield.php](config/filament-shield.php) for full configuration options.
+
 #### Resources
 Generally there are two scenarios that shield handles permissions for your `Filament` resources.
 
@@ -188,6 +272,26 @@ In the above example the `getPermissionPrefixes()` method returns the permission
     'publish' => 'Publicar'    
 ],
 ```
+#### Third-Party Plugins Permissions
+
+To generate permissions for third-party plugins, or if you don't want to change your resource, you can specify the permissions by adding a key in the `config` file inside `permission_prefixes`:
+
+```php
+'permission_prefixes' => [
+        \Tapp\FilamentAuthenticationLog\Resources\AuthenticationLogResource::class => [
+            'view_any',
+        ],
+
+        'resource' => [
+         ...
+        ],
+
+        'page' => 'page',
+        'widget' => 'widget',
+    ],
+``` 
+
+
 
 ##### Configure Permission Identifier
 By default the permission identifier is generated as follow:
@@ -269,11 +373,11 @@ class MyPage extends Page
     use HasPageShield;
     ...
 
-    protected function beforeBooted : void() {
+    protected function beforeBooted() : void {
         ...
     }
 
-    protected function afterBooted : void() {
+    protected function afterBooted() : void {
         ...
     }
 
@@ -281,7 +385,7 @@ class MyPage extends Page
      * Hook to perform an action before redirect if the user
      * doesn't have access to the page.  
      * */
-    protected function beforeShieldRedirects : void() {
+    protected function beforeShieldRedirects() : void {
         ...
     }
 }
@@ -330,47 +434,7 @@ class IncomeWidget extends LineChartWidget
 
 ### Policies
 
-#### Role Policy
-##### Using Laravel 10
-To ensure `RoleResource` access via `RolePolicy` you would need to add the following to your `AuthServiceProvider`:
-
-```php
-//AuthServiceProvider.php
-...
-protected $policies = [
-    'Spatie\Permission\Models\Role' => 'App\Policies\RolePolicy',
-];
-...
-```
-##### Using Laravel 11
-
-To ensure `RoleResource` access via `RolePolicy` you would need to add the following to your `AppServiceProvider`:
-
-```php
-//AppServiceProvider.php
-use Illuminate\Support\Facades\Gate;
-...
-public function boot(): void
-    {
-        ...
-        Gate::policy(\Spatie\Permission\Models\Role::class, \App\Policies\RolePolicy::class);
-    }
-...
-```
-
-**whatever your version of Laravel, you can skip it if you have enabled it from the `config`:**
-
-```php
-// config/filament-shield.php
-...
-
-'register_role_policy' => [
-    'enabled' => true,
-],
-...
-```
-
-#### Policy Path
+#### Path
 If your policies are not in the default `Policies` directory in the `app_path()` you can change the directory name in the config file:
 
 ```php
@@ -382,9 +446,30 @@ If your policies are not in the default `Policies` directory in the `app_path()`
 ...
 ```
 
-#### Custom folder structure for Models or Third-Party Plugins
+#### Policy Discovery 
 
-Shield also generates policies and permissions for third-party plugins and `Models` with custom folder structure and to enforce the generated policies you will need to register them.
+Got a ton of policies inside subdirectories? Have to manually register them! right?
+
+Well, you can or you could instruct Laravel to automatically detect and register policies—even in subdirectories for you.
+
+Just add this to the `boot()` method:
+
+📌 Laravel 10 → `AuthServiceProvider`
+
+📌 Laravel 11+ → `xxServiceProvider`.
+
+```
+public function boot(): void
+{
+    Gate::guessPolicyNamesUsing(function (string $modelClass) {
+        return str_replace('Models', 'Policies', $modelClass) . 'Policy';
+    });
+}
+```
+
+#### Third-Party Plugins Policies
+
+Shield also generates policies and permissions for third-party plugins. To enforce the generated policies you will need to register them.
 ##### Using Laravel 10
 ```php
 //AuthServiceProvider.php
@@ -399,6 +484,7 @@ class AuthServiceProvider extends ServiceProvider
 
     ];
 ```
+
 ##### Using Laravel 11
 ```php
 //AppServiceProvider.php
@@ -414,22 +500,43 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(\Ramnzys\FilamentEmailLog\Models\Email::class, \App\Policies\EmailPolicy::class);
     }
 ```
+
 #### Users (Assigning Roles to Users)
 Shield does not come with a way to assign roles to your users out of the box, however you can easily assign roles to your users using Filament `Forms`'s `Select` or `CheckboxList` component. Inside your users `Resource`'s form add one of these components and configure them as you need:
+1. **Without Tenancy**
 ```php
 // Using Select Component
 Forms\Components\Select::make('roles')
     ->relationship('roles', 'name')
     ->multiple()
     ->preload()
-    ->searchable()
+    ->searchable(),
                     
 // Using CheckboxList Component
 Forms\Components\CheckboxList::make('roles')
     ->relationship('roles', 'name')
-    ->searchable()
+    ->searchable(),
 ```
+2. **With Tenancy**
+```php
+// Using Select Component
+Forms\Components\Select::make('roles')
+      ->relationship('roles', 'name')
+      ->saveRelationshipsUsing(function (Model $record, $state) {
+           $record->roles()->syncWithPivotValues($state, [config('permission.column_names.team_foreign_key') => getPermissionsTeamId()]);
+      })
+     ->multiple()
+     ->preload()
+     ->searchable(),
 
+// Using CheckboxList Component
+Forms\Components\CheckboxList::make('roles')
+      ->relationship(name: 'roles', titleAttribute: 'name')
+      ->saveRelationshipsUsing(function (Model $record, $state) {
+           $record->roles()->syncWithPivotValues($state, [config('permission.column_names.team_foreign_key') => getPermissionsTeamId()]);
+      })
+     ->searchable(),
+```
 You can find out more about these components in the [Filament Docs](https://filamentphp.com/docs/3.x/forms/installation)
 
 - [Select](https://filamentphp.com/docs/3.x/forms/fields/select)
@@ -467,6 +574,59 @@ public function panel(Panel $panel): Panel
 ```
 <img width="1161" alt="Screenshot 2023-09-24 at 10 34 31 PM" src="https://github.com/bezhanSalleh/filament-shield/assets/10007504/be42bab2-72d1-4db0-8de4-8b8fba2d4e68">
 
+## Available Commands
+### Prohibited Commands
+Since almost all shield commands are destructive and can cause data loss, they can be prohibited by calling the prohibit method of the command as following in a service provider's `boot()` method:
+```php
+use BezhanSalleh\FilamentShield\FilamentShield;
+use BezhanSalleh\FilamentShield\Commands;
+    public function boot(): void
+    {
+        // individually prohibit commands
+        Commands\SetupCommand::prohibit($this->app->isProduction());
+        Commands\InstallCommand::prohibit($this->app->isProduction());
+        Commands\GenerateCommand::prohibit($this->app->isProduction());
+        Commands\PublishCommand::prohibit($this->app->isProduction());
+        // or prohibit the above commands all at once
+        FilamentShield::prohibitDestructiveCommands($this->app->isProduction())
+    }
+```
+### Core Commands
+```bash
+# Setup Shield
+shield:setup [--fresh] [--minimal] [--tenant=]
+
+# Install Shield for a panel
+shield:install {panel} [--tenant]
+
+# Generate permissions/policies
+shield:generate [options]
+
+# Create super admin
+shield:super-admin [--user=] [--panel=] [--tenant=]
+
+# Create seeder
+shield:seeder [options]
+
+# Publish Role Resource
+shield:publish {panel}
+```
+
+### Generate Command Options
+```bash
+--all                    Generate for all entities
+--option=[OPTION]        Override generator option
+--resource=[RESOURCE]    Specific resources
+--page=[PAGE]            Specific pages  
+--widget=[WIDGET]        Specific widgets
+--exclude                Exclude entities
+--ignore-config-exclude  Ignore config excludes
+--panel[=PANEL]          Panel ID to get the components(resources, pages, widgets)
+--relationships          Generate relationships for the given panel, only works if the panel has tenancy enabled
+```
+> [!NOTE] 
+> For setting up super-admin user when using tenancy/team feature consult the core package **[spatie/laravel-permission](https://spatie.be/docs/laravel-permission/v6/basic-usage/teams-permissions)**
+
 #### Translations 
 
 Publish the translations using:
@@ -474,38 +634,6 @@ Publish the translations using:
 ```bash
 php artisan vendor:publish --tag="filament-shield-translations"
 ```
-
-## Available Filament Shield Commands
-
-#### `shield:doctor` 
-- Show useful info about Filament Shield.
-
-#### `shield:install` 
-Setup Core Package requirements and Install Shield. Accepts the following flags:
-- `--fresh`           re-run the migrations
-- `--only`            Only setups shield without generating permissions and creating super-admin
-  
-#### `shield:generate`
-Generate Permissions and/or Policies for Filament entities. Accepts the following flags: 
-- `--all`                    Generate permissions/policies for all entities
-- `--option[=OPTION]`        Override the config generator option(`policies_and_permissions`,`policies`,`permissions`)
-- `--resource[=RESOURCE]`    One or many resources separated by comma (,)
-- `--page[=PAGE]`            One or many pages separated by comma (,)
-- `--widget[=WIDGET]`        One or many widgets separated by comma (,)
-- `--exclude`                Exclude the given entities during generation
-- `--ignore-config-exclude`  Ignore config `exclude` option during generation
-- `--ignore-existing-policies`  Do not overwrite the existing policies.
-
-#### `shield:super-admin` 
-Create a user with super_admin role.
-- Accepts an `--user=` argument that will use the provided ID to find the user to be made super admin.
-
-### `shield:publish`
-- Publish the Shield `RoleResource` and customize it however you like
-
-### `shield:seeder`
-- Deploy easily by setting up your roles and permissions or add your custom seeds
-  
 
 ## Testing
 

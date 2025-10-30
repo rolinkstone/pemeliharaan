@@ -17,9 +17,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOneOrManyThrough;
 use Illuminate\Support\Js;
+use Livewire\Attributes\Locked;
 use Throwable;
-
-use function Filament\Support\is_app_url;
 
 /**
  * @property Form $form
@@ -45,6 +44,9 @@ class CreateRecord extends Page
     public ?string $previousUrl = null;
 
     protected static bool $canCreateAnother = true;
+
+    #[Locked]
+    public bool $isCreating = false;
 
     public function getBreadcrumb(): string
     {
@@ -76,6 +78,12 @@ class CreateRecord extends Page
 
     public function create(bool $another = false): void
     {
+        if ($this->isCreating) {
+            return;
+        }
+
+        $this->isCreating = true;
+
         $this->authorizeAccess();
 
         try {
@@ -101,9 +109,13 @@ class CreateRecord extends Page
                 $this->rollBackDatabaseTransaction() :
                 $this->commitDatabaseTransaction();
 
+            $this->isCreating = false;
+
             return;
         } catch (Throwable $exception) {
             $this->rollBackDatabaseTransaction();
+
+            $this->isCreating = false;
 
             throw $exception;
         }
@@ -121,12 +133,14 @@ class CreateRecord extends Page
 
             $this->fillForm();
 
+            $this->isCreating = false;
+
             return;
         }
 
         $redirectUrl = $this->getRedirectUrl();
 
-        $this->redirect($redirectUrl, navigate: FilamentView::hasSpaMode() && is_app_url($redirectUrl));
+        $this->redirect($redirectUrl, navigate: FilamentView::hasSpaMode($redirectUrl));
     }
 
     protected function getCreatedNotification(): ?Notification

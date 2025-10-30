@@ -114,38 +114,41 @@ class LaporanKerusakanResource extends Resource
                 ->live() // Pastikan perubahan langsung diproses
                 ->extraAttributes(['wire:key' => 'jenis_barang']), // Mencegah wire issue di Livewire
 
-                Select::make('nama')
-                ->label('Nama Barang')
-                ->required()
-                ->options(function (callable $get) {
-                    $jenisBarang = $get('jenis_barang');
+              Select::make('nama')
+    ->label('Nama Barang')
+    ->required()
+    ->options(function (callable $get) {
+        $jenisBarang = $get('jenis_barang');
 
-                    if (!$jenisBarang) {
-                        return [];
-                    }
+        if (!$jenisBarang) {
+            return [];
+        }
 
-                    // Menggunakan nama dan nup sebagai value
-                    return Barang::where('jenis_barang', $jenisBarang)
-                        ->pluck(DB::raw("CONCAT(nama, ' - NUP : ', nup)"), 'id'); // Gabungkan nama dan nup
-                })
-                ->reactive() // Memastikan perubahan di-refresh otomatis
-                ->disabled(fn (callable $get) => !$get('jenis_barang'))
-                ->afterStateUpdated(function ($state, callable $set) {
-                    \Log::info('Selected barang ID: ' . $state);
-                
-                    if ($state) {
-                        $barang = Barang::find($state);
-                        \Log::info('Barang: ', $barang?->toArray());
-                
-                        if ($barang) {
-                            $set('kode_barang', $barang->kode_barang);
-                            $set('ruangan', $barang->ruangan);
-                        }
-                    } else {
-                        $set('kode_barang', ''); 
-                        $set('ruangan', '');
-                    }
-                }),
+        // Menggunakan nama dan nup sebagai value yang ditampilkan
+        return \App\Models\Barang::where('jenis_barang', $jenisBarang)
+            ->pluck(\Illuminate\Support\Facades\DB::raw("CONCAT(nama, ' - NUP : ', nup)"), 'id');
+    })
+    ->reactive() // agar berubah otomatis ketika jenis_barang berubah
+    ->disabled(fn (callable $get) => !$get('jenis_barang'))
+    ->afterStateUpdated(function ($state, callable $set) {
+        \Log::info('Selected barang ID: ' . $state);
+
+        if ($state) {
+            $barang = \App\Models\Barang::find($state);
+            \Log::info('Barang: ', $barang?->toArray());
+
+            if ($barang) {
+                $set('kode_barang', $barang->kode_barang);
+                $set('ruangan', $barang->ruangan);
+                $set('nup', $barang->nup); // Tambahkan agar NUP otomatis terisi
+            }
+        } else {
+            $set('kode_barang', '');
+            $set('ruangan', '');
+            $set('nup', ''); // Reset jika tidak ada pilihan
+        }
+    }),
+
 
                         
               
@@ -156,12 +159,21 @@ class LaporanKerusakanResource extends Resource
                 ->disabled()
                 ->dehydrated(), // Memastikan nilai tetap tersimpan ke database, // Menonaktifkan input agar tidak bisa diubah, // Nonaktifkan input kode_barang agar tidak bisa diubah manual
 
+               
+
                 Forms\Components\TextInput::make('ruangan')
                 ->label('Lokasi')
                 ->required()
                 ->maxLength(255)
                 ->disabled()
                 ->dehydrated(), // Memastikan nilai tetap tersimpan ke database, // Menonaktifkan input agar tidak bisa diubah, // Nonaktifkan input ruangan agar tidak bisa diubah manual
+
+                 Forms\Components\TextInput::make('nup')
+                ->label('NUP')
+                ->required()
+                ->maxLength(255)
+                ->disabled()
+                ->dehydrated(),
 
                 Select::make('tipe_alat')
                 ->label('Tipe Alat')
@@ -188,6 +200,7 @@ class LaporanKerusakanResource extends Resource
                 ->default(auth()->id())
                 ->disabled()
                 ->dehydrated(),
+
 
                 Forms\Components\Hidden::make('nama_pelapor')
                 ->label('Nama Pelapor')

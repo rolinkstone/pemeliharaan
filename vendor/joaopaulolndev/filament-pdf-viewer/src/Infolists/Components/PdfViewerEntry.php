@@ -4,9 +4,9 @@ namespace Joaopaulolndev\FilamentPdfViewer\Infolists\Components;
 
 use Closure;
 use Filament\Infolists\Components\ViewEntry;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Filesystem\FilesystemAdapter;
+use Illuminate\Support\Facades\Storage;
 use League\Flysystem\UnableToCheckFileExistence;
 use Throwable;
 
@@ -46,10 +46,17 @@ class PdfViewerEntry extends ViewEntry
         return $this->evaluate($this->disk) ?? config('filament.default_filesystem_disk');
     }
 
-    public function getFileUrl(?string $state = null): string
+    public function fileUrl(string|Closure $fileUrl): self
     {
-        if (! $state) {
-            return '';
+        $this->fileUrl = $fileUrl;
+
+        return $this;
+    }
+
+    public function getFileUrl(?string $state = null): string|null
+    {
+        if (empty($state)) {
+            return $this->evaluate($this->fileUrl);
         }
 
         if ((filter_var($state, FILTER_VALIDATE_URL) !== false) || str($state)->startsWith('data:')) {
@@ -82,6 +89,11 @@ class PdfViewerEntry extends ViewEntry
 
         return $storage->url($state);
     }
+
+    // public function getFileUrl(): string
+    // {
+    //     return $this->evaluate($this->fileUrl);
+    // }
 
     public function getVisibility(): string
     {

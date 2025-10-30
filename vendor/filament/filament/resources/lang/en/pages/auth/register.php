@@ -5,7 +5,6 @@ return [
     'title' => 'Register',
 
     'heading' => 'Sign up',
-    
 
     'actions' => [
 

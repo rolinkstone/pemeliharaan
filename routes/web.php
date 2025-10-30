@@ -30,6 +30,8 @@ Route::get('/generate-pdf/{id}', [PdfController::class, 'generatePdf'])->name('g
 Route::get('/ticket-pdf/{id}', [TicketController::class, 'ticketPdf'])->name('ticket-pdf');
 Route::get('/spb-pdf/{id}', [SpbController::class, 'spbPdf'])->name('spb-pdf');
 
+
+
 Route::get('/storage/bukti_bayar/{filename}', function ($filename) {
     $path = storage_path('app/public/bukti_bayar/' . $filename);
     if (!file_exists($path)) {

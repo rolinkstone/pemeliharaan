@@ -190,12 +190,40 @@ class BarangResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
+                
+                Tables\Actions\Action::make('log')
+                    ->label('Log')
+                    ->icon('heroicon-o-eye')
+                    ->color('success')
+                    ->modalHeading('History Kerusakan')
+                    ->modalWidth('xl')
+                    ->modalContent(fn ($record) => view('filament.pages.actions.detail-barang', [
+                        'record' => $record,
+                    ])),
+                
+
+                
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->headerActions([
+    Tables\Actions\Action::make('export_excel')
+        ->label('Export ke Excel')
+        ->icon('heroicon-o-arrow-down-tray')
+        ->color('success')
+        ->action(function ($livewire) {
+            $filters = $livewire->tableFilters ?? [];
+            $fileName = 'Data_Barang_' . now()->format('Ymd_His') . '.xlsx';
+
+            return \Maatwebsite\Excel\Facades\Excel::download(
+                new \App\Exports\BarangExport($filters),
+                $fileName
+            );
+        }),
+    ]);
           
     }
 

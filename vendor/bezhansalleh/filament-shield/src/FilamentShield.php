@@ -13,6 +13,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Str;
+use Spatie\Permission\Models\Role;
 use Spatie\Permission\PermissionRegistrar;
 
 class FilamentShield
@@ -105,8 +106,18 @@ class FilamentShield
         }
     }
 
-    public static function createRole(?string $name = null)
+    public static function createRole(?string $name = null, int | string | null $tenantId = null): Role
     {
+        if (Utils::isTenancyEnabled()) {
+            return Utils::getRoleModel()::firstOrCreate(
+                [
+                    'name' => $name ?? Utils::getSuperAdminName(),
+                    Utils::getTenantModelForeignKey() => $tenantId,
+                ],
+                ['guard_name' => Utils::getFilamentAuthGuard()]
+            );
+        }
+
         return Utils::getRoleModel()::firstOrCreate(
             ['name' => $name ?? Utils::getSuperAdminName()],
             ['guard_name' => Utils::getFilamentAuthGuard()]
@@ -190,9 +201,15 @@ class FilamentShield
 
         if (Utils::discoverAllPages()) {
             $pages = [];
+
             foreach (Filament::getPanels() as $panel) {
                 $pages = array_merge($pages, $panel->getPages());
             }
+
+            if (Filament::hasTenantProfile()) {
+                $pages[] = Filament::getTenantProfilePage();
+            }
+
             $pages = array_unique($pages);
         }
 
@@ -300,7 +317,7 @@ class FilamentShield
 
         return match (true) {
             $widgetInstance instanceof TableWidget => (string) invade($widgetInstance)->makeTable()->getHeading(),
-            ! ($widgetInstance instanceof TableWidget) && $widgetInstance instanceof Widget && method_exists($widgetInstance, 'getHeading') => (string) invade($widgetInstance)->getHeading(),
+            self::hasValidHeading($widgetInstance) => (string) invade($widgetInstance)->getHeading(),
             default => str($widget)
                 ->afterLast('\\')
                 ->headline()
@@ -308,11 +325,18 @@ class FilamentShield
         };
     }
 
+    private static function hasValidHeading($widgetInstance): bool
+    {
+        return $widgetInstance instanceof Widget
+            && method_exists($widgetInstance, 'getHeading')
+            && filled(invade($widgetInstance)->getHeading());
+    }
+
     protected function getDefaultPermissionIdentifier(string $resource): string
     {
         return Str::of($resource)
             ->afterLast('Resources\\')
-            ->before('Resource')
+            ->beforeLast('Resource')
             ->replace('\\', '')
             ->snake()
             ->replace('_', '::');
@@ -338,7 +362,6 @@ class FilamentShield
                             ? str(static::getLocalizedResourcePermissionLabel($permission))
                                 ->prepend(
                                     str($resourceEntity['fqcn']::getPluralModelLabel())
-                                        ->plural()
                                         ->title()
                                         ->append(' - ')
                                         ->toString()
@@ -383,5 +406,20 @@ class FilamentShield
             ->values()
             ->unique()
             ->toArray();
+    }
+
+    /**
+     * Indicate if destructive Shield commands should be prohibited.
+     *
+     * Prohibits: shield:setup, shield:install, and shield:generate
+     *
+     * @return void
+     */
+    public static function prohibitDestructiveCommands(bool $prohibit = true)
+    {
+        Commands\GenerateCommand::prohibit($prohibit);
+        Commands\InstallCommand::prohibit($prohibit);
+        Commands\PublishCommand::prohibit($prohibit);
+        Commands\SetupCommand::prohibit($prohibit);
     }
 }

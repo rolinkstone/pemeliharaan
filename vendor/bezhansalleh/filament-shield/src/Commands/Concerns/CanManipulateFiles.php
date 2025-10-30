@@ -24,8 +24,8 @@ trait CanManipulateFiles
     {
         $filesystem = new Filesystem;
 
-        if (! $this->fileExists($stubPath = base_path("stubs/filament/{$stub}.stub"))) {
-            $stubPath = __DIR__ . "/../../../stubs/{$stub}.stub";
+        if (! $this->fileExists($stubPath = base_path('stubs' . DIRECTORY_SEPARATOR . 'filament-shield' . DIRECTORY_SEPARATOR . "{$stub}.stub"))) {
+            $stubPath = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'stubs' . DIRECTORY_SEPARATOR . "{$stub}.stub";
         }
 
         $stub = Str::of($filesystem->get($stubPath));
@@ -64,5 +64,21 @@ trait CanManipulateFiles
             $file,
             str_replace($search, $replace, file_get_contents($file))
         );
+    }
+
+    protected function copy(string $source, string $destination): bool
+    {
+        $filesystem = new Filesystem;
+
+        if (! $this->fileExists($destination)) {
+            $filesystem->copy($source, $destination);
+            $this->components->info("$destination file published!");
+
+            return true;
+        }
+
+        $this->components->warn("$destination already exists, skipping ...");
+
+        return false;
     }
 }

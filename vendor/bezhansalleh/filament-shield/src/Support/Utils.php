@@ -5,8 +5,11 @@ namespace BezhanSalleh\FilamentShield\Support;
 use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use BezhanSalleh\FilamentShield\FilamentShield;
 use Filament\Facades\Filament;
+use Filament\Pages\SubNavigationPosition;
+use Filament\Panel;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
+use Spatie\Permission\PermissionRegistrar;
 
 class Utils
 {
@@ -15,18 +18,24 @@ class Utils
         return Filament::getCurrentPanel()?->getAuthGuard() ?? '';
     }
 
-    public static function isResourcePublished(): bool
+    public static function isResourcePublished(Panel $panel): bool
     {
-        $roleResourcePath = app_path((string) Str::of('Filament\\Resources\\Shield\\RoleResource.php')->replace('\\', '/'));
-
-        $filesystem = new Filesystem;
-
-        return (bool) $filesystem->exists($roleResourcePath);
+        return str(
+            string: collect(value: $panel->getResources())
+                ->values()
+                ->join(',')
+        )
+            ->contains('\\RoleResource');
     }
 
     public static function getResourceSlug(): string
     {
         return (string) config('filament-shield.shield_resource.slug');
+    }
+
+    public static function getSubNavigationPosition(): ?SubNavigationPosition
+    {
+        return config('filament-shield.shield_resource.sub_navigation_position');
     }
 
     public static function isResourceNavigationRegistered(): bool
@@ -106,9 +115,10 @@ class Utils
         }
     }
 
-    public static function getGeneralResourcePermissionPrefixes(): array
+    public static function getGeneralResourcePermissionPrefixes(string $resourceFQCN): array
     {
-        return config('filament-shield.permission_prefixes.resource');
+        return config("filament-shield.permission_prefixes.$resourceFQCN") ??
+            config('filament-shield.permission_prefixes.resource');
     }
 
     public static function getPagePermissionPrefix(): string
@@ -215,17 +225,19 @@ class Utils
     {
         return static::doesResourceHaveCustomPermissions($resourceFQCN)
             ? $resourceFQCN::getPermissionPrefixes()
-            : static::getGeneralResourcePermissionPrefixes();
+            : static::getGeneralResourcePermissionPrefixes($resourceFQCN);
     }
 
     public static function getRoleModel(): string
     {
-        return config('permission.models.role', 'Spatie\\Permission\\Models\\Role');
+        return app(PermissionRegistrar::class)
+            ->getRoleClass();
     }
 
     public static function getPermissionModel(): string
     {
-        return config('permission.models.permission', 'Spatie\\Permission\\Models\\Permission');
+        return app(PermissionRegistrar::class)
+            ->getPermissionClass();
     }
 
     public static function discoverAllResources(): bool
@@ -255,5 +267,20 @@ class Utils
         $filesystem = new Filesystem;
 
         return (bool) $filesystem->exists(app_path(static::getPolicyPath() . DIRECTORY_SEPARATOR . 'RolePolicy.php'));
+    }
+
+    public static function isTenancyEnabled(): bool
+    {
+        return (bool) config()->get('permission.teams', false);
+    }
+
+    public static function getTenantModel(): ?string
+    {
+        return config()->get('filament-shield.tenant_model', null);
+    }
+
+    public static function getTenantModelForeignKey(): string
+    {
+        return config()->get('permission.column_names.team_foreign_key', 'team_id');
     }
 }
